@@ -1,0 +1,14 @@
+# .gitignore
+
+# Ignore .env file
+.env
+
+# Ignore logs
+logs/
+*.log
+
+# Node modules
+node_modules/
+.dockerignore
+
+# Other files and folders you want to ignore
