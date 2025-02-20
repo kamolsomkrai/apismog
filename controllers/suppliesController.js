@@ -47,8 +47,14 @@ const getSupply = async (req, res) => {
 };
 
 const createNewSupply = async (req, res) => {
-  const { hospcode } = req.user;
-  const { name, description, quantity, unit } = req.body;
+  const { hospcode, provcode } = req.user;
+  const {
+    supplie_id,
+    quantity_stock,
+    quantity_add,
+    quantity_minus,
+    quantity_total,
+  } = req.body;
 
   try {
     const insertedId = await createSupply(
