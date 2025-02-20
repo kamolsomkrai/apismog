@@ -76,7 +76,7 @@ const handleSmogImport = async (req, res) => {
           // Insert smog_import records
           const insertSmogSql = `
                     INSERT INTO smog_import 
-                    (hospcode, pid, birth, sex, hn, seq, date_serv, diagtype, diagcode, clinic, provider, d_update, cid, appoint)
+                    (hospcode, pid, birth, sex, addrcode, hn, seq, date_serv, diagtype, diagcode, clinic, provider, d_update, cid, appoint, admit, er)
                     VALUES ?
                 `;
           await connection.query(insertSmogSql, [validRecords]);
