@@ -20,7 +20,7 @@ const smogImportSchema = Joi.object({
   clinic: Joi.string().max(100).allow(null, ""),
   provider: Joi.string().max(100).allow(null, ""),
   d_update: Joi.date().required(),
-  cid: Joi.string().max(20).allow(null, ""),
+  cid: Joi.string().max(64).allow(null, ""),
   appoint: Joi.string().valid("Y", "N").required(),
   admit: Joi.string().valid("Y", "N").required(),
   er: Joi.string().valid("Y", "N").required(),
