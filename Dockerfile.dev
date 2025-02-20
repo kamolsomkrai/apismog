@@ -8,10 +8,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # ติดตั้ง dependencies (รวมทั้ง devDependencies ด้วย)
-RUN npm install
+RUN npm install && npm install -g nodemon
 
-# # คัดลอกโค้ดแอปพลิเคชัน
-# COPY . .
+# คัดลอกโค้ดแอปพลิเคชัน
+COPY . .
 
 # Expose port ที่แอปพลิเคชันใช้งาน
 EXPOSE 3000
