@@ -4,6 +4,9 @@ const { getSmogImportRecords } = require("../models/smogImportModel");
 const smogImportSchema = require("../validation/smogImportValidation");
 const cleanDiagcode = require("../helpers/cleanDiagcode");
 const db = require("../config/db");
+require("dotenv").config();
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY; // key 32 bytes
+const ENCRYPTION_IV = process.env.ENCRYPTION_IV;
 // ฟังก์ชันสำหรับถอดรหัสข้อมูล AES-256-CBC
 function decryptData(encryptedData) {
   // แปลงข้อมูลจาก base64 เป็น Buffer
