@@ -1,0 +1,20 @@
+# Dockerfile สำหรับการพัฒนา (Development) โดยใช้ nodemon
+FROM node:lts
+
+# ตั้งค่า Working Directory
+WORKDIR /usr/src/app
+
+# คัดลอก package.json และ package-lock.json
+COPY package*.json ./
+
+# ติดตั้ง dependencies (รวมทั้ง devDependencies ด้วย)
+RUN npm install
+
+# คัดลอกโค้ดแอปพลิเคชัน
+COPY . .
+
+# Expose port ที่แอปพลิเคชันใช้งาน
+EXPOSE 3000
+
+# รันแอปพลิเคชันด้วย nodemon
+CMD ["npm", "run", "dev"]
