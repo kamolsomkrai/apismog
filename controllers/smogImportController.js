@@ -10,20 +10,20 @@ const handleSmogImport = async (req, res) => {
   //   console.log(compressedData);
   const method = req.body.method || 0;
 
-  zlib.gunzip(
-    Buffer.from(compressedData, "base64"),
-    async (err, decompressedData) => {
-      if (err) {
-        console.error("Decompression error:", err);
-        return res.status(400).json({ message: "Decompression failed." });
-      }
+//   zlib.gunzip(
+//     Buffer.from(compressedData, "base64"),
+//     async (err, decompressedData) => {
+//       if (err) {
+//         console.error("Decompression error:", err);
+//         return res.status(400).json({ message: "Decompression failed." });
+//       }
 
       let data;
-      try {
-        data = JSON.parse(decompressedData.toString());
-      } catch (parseErr) {
-        return res.status(400).json({ message: "Invalid JSON data." });
-      }
+    //   try {
+    //     data = JSON.parse(decompressedData.toString());
+    //   } catch (parseErr) {
+    //     return res.status(400).json({ message: "Invalid JSON data." });
+    //   }
 
       if (!Array.isArray(data)) {
         return res
