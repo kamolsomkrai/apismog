@@ -9,3 +9,8 @@ services:
       - "3006:3000"
     env_file:
       - .env
+    networks:
+      - nginx_networks
+networks:
+  nginx_networks:
+    external: true
