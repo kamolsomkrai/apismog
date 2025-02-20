@@ -10,7 +10,7 @@ const smogImportSchema = Joi.object({
   hn: Joi.string().max(50).required(),
   seq: Joi.string().max(50).required(),
   date_serv: Joi.date().required(),
-  diagtype: Joi.string().max(50).allow(null, ""),
+  diagtype: Joi.number().integer().min(0).optional(),
   diagcode: Joi.string()
     .max(50)
     .allow(null, "")
