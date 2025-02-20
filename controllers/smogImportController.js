@@ -34,7 +34,7 @@ const handleSmogImport = async (req, res) => {
     console.error("Decryption error:", decErr);
     return res
       .status(400)
-      .json({ message: "Decryption failed.", data: decryptedData });
+      .json({ message: "Decryption failed.", data: decErr });
   }
 
   // Decompress ข้อมูลที่ถูกถอดรหัส
