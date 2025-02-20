@@ -5,17 +5,19 @@ const smogImportSchema = require("../validation/smogImportValidation");
 const cleanDiagcode = require("../helpers/cleanDiagcode");
 const db = require("../config/db");
 require("dotenv").config();
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY; // key 32 bytes
-const ENCRYPTION_IV = process.env.ENCRYPTION_IV;
-// ฟังก์ชันสำหรับถอดรหัสข้อมูล AES-256-CBC
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY.trim(); // key 32 bytes
+const ENCRYPTION_IV = process.env.ENCRYPTION_IV.trim();
 function decryptData(encryptedData) {
   // แปลงข้อมูลจาก base64 เป็น Buffer
   const encryptedBuffer = Buffer.from(encryptedData, "base64");
+
+  // สร้าง decipher โดยใช้ key และ iv ที่แปลงเป็น Buffer
   const decipher = crypto.createDecipheriv(
     "aes-256-cbc",
-    ENCRYPTION_KEY,
-    ENCRYPTION_IV
+    Buffer.from(ENCRYPTION_KEY, "utf8"),
+    Buffer.from(ENCRYPTION_IV, "utf8")
   );
+
   let decrypted = decipher.update(encryptedBuffer);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted;
