@@ -14,6 +14,7 @@ const {
 const router = express.Router();
 
 // GET /api/supplies - ดึงรายการ supplies ทั้งหมด
+
 router.get("/", authenticateTokenFromCookies, getAllSupplies);
 
 // GET /api/supplies/:id - ดึงรายละเอียดของ supply
