@@ -29,4 +29,4 @@ COPY --from=builder /usr/src/app ./
 EXPOSE 3000
 
 # รันแอปพลิเคชัน
-CMD [ "nodemon", "app.js" ]
+CMD [ "node", "app.js" ]
