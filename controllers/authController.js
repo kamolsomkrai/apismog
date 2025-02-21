@@ -8,11 +8,9 @@ const register = async (req, res) => {
   const { username, password, hospcode, hospname } = req.body;
 
   if (!username || !password || !hospcode || !hospname) {
-    return res
-      .status(400)
-      .json({
-        message: "Username, password, hospcode และ hospname จำเป็นต้องมี.",
-      });
+    return res.status(400).json({
+      message: "Username, password, hospcode และ hospname จำเป็นต้องมี.",
+    });
   }
 
   try {
@@ -108,6 +106,7 @@ const getToken = async (req, res) => {
         username: user.username,
         hospcode: user.hospcode,
         hospname: user.hospname,
+        provcode: user.provcode,
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
