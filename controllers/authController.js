@@ -51,7 +51,7 @@ const login = async (req, res) => {
     if (!match) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
-
+    console.log(user);
     // สร้าง JWT Token
     const token = jwt.sign(
       {
