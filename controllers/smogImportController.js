@@ -6,6 +6,7 @@ const smogImportSchema = require("../validation/smogImportValidation");
 const cleanDiagcode = require("../helpers/cleanDiagcode");
 const db = require("../config/db");
 require("dotenv").config();
+
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY.trim(); // key 32 bytes
 const ENCRYPTION_IV = process.env.ENCRYPTION_IV.trim();
 
@@ -21,19 +22,17 @@ function decryptData(encryptedData) {
     Buffer.from(ENCRYPTION_IV, "utf8")
   );
 
-  // พยายามถอดรหัสข้อมูล
+  // ถอดรหัสข้อมูล
   let decrypted;
   try {
     decrypted = Buffer.concat([
       decipher.update(encryptedBuffer),
       decipher.final(),
     ]);
-    // console.log(decrypted);
   } catch (err) {
     console.error("Decryption error:", err);
     throw err;
   }
-
   return decrypted;
 }
 
@@ -42,13 +41,12 @@ const handleSmogImport = async (req, res) => {
   const encryptedData = req.body.data;
   let decryptedData;
   try {
-    // ถอดรหัสข้อมูลเพื่อให้ได้ข้อมูลที่ถูก compress ด้วย gzip
     decryptedData = decryptData(encryptedData);
   } catch (decErr) {
     console.error("Decryption error:", decErr);
     return res
       .status(400)
-      .json({ message: "Decryption failed.", data: decErr });
+      .json({ message: "Decryption failed.", data: decErr.toString() });
   }
 
   // Decompress ข้อมูลที่ถูกถอดรหัส
@@ -62,6 +60,7 @@ const handleSmogImport = async (req, res) => {
     try {
       data = JSON.parse(decompressedData.toString());
     } catch (parseErr) {
+      console.error("JSON Parse error:", parseErr);
       return res.status(400).json({ message: "Invalid JSON data." });
     }
 
@@ -114,16 +113,16 @@ const handleSmogImport = async (req, res) => {
         await connection.beginTransaction();
 
         const insertSmogSql = `
-            INSERT INTO smog_import 
-            (hospcode, pid, birth, sex, addrcode, hn, seq, date_serv, diagtype, diagcode, clinic, provider, d_update, cid, appoint, admit, er)
-            VALUES ?
-          `;
+          INSERT INTO smog_import 
+          (hospcode, pid, birth, sex, addrcode, hn, seq, date_serv, diagtype, diagcode, clinic, provider, d_update, cid, appoint, admit, er)
+          VALUES ?
+        `;
         await connection.query(insertSmogSql, [validRecords]);
 
         const insertApiImportsSql = `
-            INSERT INTO api_imports (hospcode, method, rec)
-            VALUES (?, ?, ?)
-          `;
+          INSERT INTO api_imports (hospcode, method, rec)
+          VALUES (?, ?, ?)
+        `;
         await connection.query(insertApiImportsSql, [
           hospcode,
           req.body.method || 0,
@@ -140,21 +139,27 @@ const handleSmogImport = async (req, res) => {
       } catch (dbErr) {
         await connection.rollback();
         connection.release();
-        res.status(500).json({ message: "Internal server error." });
+        console.error("Database error:", dbErr);
+        res
+          .status(500)
+          .json({ message: "Internal server error.", error: dbErr.toString() });
       }
     } catch (connErr) {
-      res.status(500).json({ message: "Internal server error." });
+      console.error("Connection error:", connErr);
+      res
+        .status(500)
+        .json({ message: "Internal server error.", error: connErr.toString() });
     }
   });
 };
 
 const getSmogImportRecordsHandler = async (req, res) => {
   const { hospcode } = req.user;
-
   try {
     const records = await getSmogImportRecords(hospcode);
     res.json(records);
   } catch (err) {
+    console.error("Get records error:", err);
     res.status(500).json({ message: "Internal server error." });
   }
 };
