@@ -59,6 +59,7 @@ const login = async (req, res) => {
         username: user.username,
         hospcode: user.hospcode,
         hospname: user.hospname,
+        provcode: user.provcode,
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
