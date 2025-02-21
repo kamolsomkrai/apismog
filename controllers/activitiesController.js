@@ -1,5 +1,5 @@
 // src/controllers/activitiesController.js
-const pool = require("../config/db");
+const pool = require("../config/db2");
 
 exports.getActivities = async (req, res) => {
   try {
