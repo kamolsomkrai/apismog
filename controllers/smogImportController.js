@@ -18,7 +18,7 @@ function decryptData(encryptedData) {
   console.debug("Starting decryption process...");
   // แปลงข้อมูลที่เข้ามาจาก base64 เป็น Buffer
   const encryptedBuffer = Buffer.from(encryptedData, "base64");
-  console.debug("Encrypted buffer length:", encryptedBuffer.length);
+  //   console.debug("Encrypted buffer length:", encryptedBuffer.length);
 
   // สร้าง decipher โดยใช้ algorithm 'aes-256-cbc'
   const decipher = crypto.createDecipheriv(
@@ -33,10 +33,10 @@ function decryptData(encryptedData) {
       decipher.update(encryptedBuffer),
       decipher.final(),
     ]);
-    console.debug(
-      "Decryption successful. Decrypted data length:",
-      decrypted.length
-    );
+    // console.debug(
+    //   "Decryption successful. Decrypted data length:",
+    //   decrypted.length
+    // );
   } catch (err) {
     console.error("Decryption error:", err);
     throw err;
@@ -74,7 +74,7 @@ const handleSmogImport = async (req, res) => {
     let data;
     try {
       data = JSON.parse(decompressedData.toString());
-      console.debug("JSON parsed successfully. Parsed data:", data);
+      //   console.debug("JSON parsed successfully. Parsed data:", data);
     } catch (parseErr) {
       console.error("JSON Parse error:", parseErr);
       return res
@@ -93,10 +93,10 @@ const handleSmogImport = async (req, res) => {
     const validRecords = [];
     for (let i = 0; i < data.length; i++) {
       let record = data[i];
-      console.debug(`Validating record ${i + 1}:`, record);
+      //   console.debug(`Validating record ${i + 1}:`, record);
       if (record.diagcode) {
         record.diagcode = cleanDiagcode(record.diagcode);
-        console.debug(`Cleaned diagcode for record ${i + 1}:`, record.diagcode);
+        // console.debug(`Cleaned diagcode for record ${i + 1}:`, record.diagcode);
       }
 
       const { error, value } = smogImportSchema.validate(record);
@@ -105,13 +105,11 @@ const handleSmogImport = async (req, res) => {
           `Validation error in record ${i + 1}:`,
           error.details[0].message
         );
-        return res
-          .status(400)
-          .json({
-            message: `Validation error in record ${i + 1}: ${
-              error.details[0].message
-            }`,
-          });
+        return res.status(400).json({
+          message: `Validation error in record ${i + 1}: ${
+            error.details[0].message
+          }`,
+        });
       }
       validRecords.push([
         value.hospcode,
@@ -133,7 +131,7 @@ const handleSmogImport = async (req, res) => {
         value.er,
       ]);
     }
-    console.debug("All records validated. Valid records:", validRecords);
+    // console.debug("All records validated. Valid records:", validRecords);
 
     const recordCount = validRecords.length;
     const hospcode = req.user.hospcode;
@@ -194,7 +192,7 @@ const getSmogImportRecordsHandler = async (req, res) => {
   console.debug("Request to fetch smog import records for hospcode:", hospcode);
   try {
     const records = await getSmogImportRecords(hospcode);
-    console.debug("Records fetched successfully:", records);
+    // console.debug("Records fetched successfully:", records);
     res.json(records);
   } catch (err) {
     console.error("Error fetching records:", err);
