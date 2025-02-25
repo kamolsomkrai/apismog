@@ -5,7 +5,7 @@ const smogImportSchema = Joi.object({
   hospcode: Joi.string().max(5).required(),
   pid: Joi.string().max(50).required(),
   birth: Joi.date().required(),
-  sex: Joi.string().valid("1", "2").required(),
+  sex: Joi.string().valid("1", "2").optional(),
   addrcode: Joi.string().max(10).required(),
   hn: Joi.string().max(50).required(),
   seq: Joi.string().max(50).required(),
