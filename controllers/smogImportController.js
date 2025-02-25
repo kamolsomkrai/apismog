@@ -45,7 +45,7 @@ function decryptData(encryptedData) {
 }
 
 const handleSmogImport = async (req, res) => {
-  console.debug("Received smog import request with body:", req.body);
+  // console.debug("Received smog import request with body:", req.body);
   // รับข้อมูล encrypted (ซึ่งถูก compress แล้ว) จาก req.body.data
   const encryptedData = req.body.data;
   let decryptedData;
