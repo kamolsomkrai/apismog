@@ -3,7 +3,8 @@ const pool = require("../config/db2");
 
 exports.getActivities = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM activities");
+    // ดึงข้อมูลกิจกรรมจากตาราง activity (ตาม schema ที่ออกแบบไว้)
+    const [rows] = await pool.query("SELECT * FROM activity");
     res.status(200).json(rows);
   } catch (error) {
     console.error("Error fetching activities:", error);
@@ -12,16 +13,28 @@ exports.getActivities = async (req, res) => {
 };
 
 exports.createActivity = async (req, res) => {
-  const { measure_type, activity_date } = req.body;
-  const { hospcode, provcode } = req.user;
-  if (!hospcode || !measure_type || !activity_date) {
+  // คาดหวังว่า req.body จะมี activity_type, activity_date และ year
+  // ส่วน req.user ควรมี hosp_code, prov_code และ dist_code
+  const { activity_type, activity_date, year } = req.body;
+  const { hospcode, provcode, distcode } = req.user; // สมมุติว่าคีย์ใน req.user ตรงกับ schema
+
+  if (
+    !hospcode ||
+    !provcode ||
+    !distcode ||
+    !activity_type ||
+    !activity_date ||
+    !year
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
     const [result] = await pool.query(
-      "INSERT INTO activities (hospcode, provcode, measure_type, activity_date) VALUES (?, ?, ?, ?)",
-      [hospcode, provcode, measure_type, activity_date]
+      `INSERT INTO activity 
+       (hosp_code, prov_code, dist_code, activity_type, activity_date, year) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [hospcode, provcode, distcode, activity_type, activity_date, year]
     );
     res
       .status(201)
