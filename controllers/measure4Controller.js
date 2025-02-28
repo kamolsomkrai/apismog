@@ -30,7 +30,7 @@ exports.getMeasure4 = async (req, res) => {
 
 exports.createMeasure4 = async (req, res) => {
   const {
-    activity_id,
+    activityId,
     openPheocDate,
     closePheocDate,
     openDontBurnDate,
@@ -40,7 +40,7 @@ exports.createMeasure4 = async (req, res) => {
   } = req.body;
 
   // ตรวจสอบว่ามีข้อมูลที่จำเป็นครบถ้วนหรือไม่
-  if (!activity_id || !openPheocDate || lawEnforcement === undefined || !year) {
+  if (!activityId || !openPheocDate || lawEnforcement === undefined || !year) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -55,7 +55,7 @@ exports.createMeasure4 = async (req, res) => {
         (activity_id, open_pheoc_date, close_pheoc_date, open_dont_burn_date, close_dont_burn_date, law_enforcement, year) 
         VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
-        activity_id,
+        activityId,
         openPheocDate,
         _closePheocDate,
         _openDontBurnDate,
@@ -70,6 +70,59 @@ exports.createMeasure4 = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating Measure4 data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.upsertMeasure4 = async (req, res) => {
+  const {
+    activityId,
+    openPheocDate,
+    closePheocDate,
+    openDontBurnDate,
+    closeDontBurnDate,
+    lawEnforcement,
+    year,
+  } = req.body;
+
+  // ตรวจสอบข้อมูลที่จำเป็น
+  if (!activityId || !openPheocDate || lawEnforcement === undefined || !year) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    // ถ้า closePheocDate, openDontBurnDate, closeDontBurnDate เป็นค่าว่าง ให้ตั้งเป็น NULL
+    const _closePheocDate = closePheocDate ? closePheocDate : null;
+    const _openDontBurnDate = openDontBurnDate ? openDontBurnDate : null;
+    const _closeDontBurnDate = closeDontBurnDate ? closeDontBurnDate : null;
+
+    const [result] = await pool.query(
+      `INSERT INTO measure4 
+        (activity_id, open_pheoc_date, close_pheoc_date, open_dont_burn_date, close_dont_burn_date, law_enforcement, year) 
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        open_pheoc_date = VALUES(open_pheoc_date),
+        close_pheoc_date = VALUES(close_pheoc_date),
+        open_dont_burn_date = VALUES(open_dont_burn_date),
+        close_dont_burn_date = VALUES(close_dont_burn_date),
+        law_enforcement = VALUES(law_enforcement)`,
+      [
+        activityId,
+        openPheocDate,
+        _closePheocDate,
+        _openDontBurnDate,
+        _closeDontBurnDate,
+        lawEnforcement,
+        year,
+      ]
+    );
+
+    res.status(200).json({
+      message: "Measure4 data upserted successfully",
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.error("Error upserting Measure4 data:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

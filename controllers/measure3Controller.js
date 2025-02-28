@@ -70,7 +70,7 @@ exports.getMeasure3 = async (req, res) => {
 
 exports.createMeasure3 = async (req, res) => {
   const {
-    activity_id,
+    activityId,
     pollutionClinicTotal,
     pollutionCliniService,
     onlinePollutionClinicTotal,
@@ -119,7 +119,7 @@ exports.createMeasure3 = async (req, res) => {
   } = req.body;
 
   if (
-    !activity_id ||
+    !activityId ||
     pollutionClinicTotal === undefined ||
     pollutionCliniService === undefined ||
     onlinePollutionClinicTotal === undefined ||
@@ -222,7 +222,7 @@ exports.createMeasure3 = async (req, res) => {
         ) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        activity_id,
+        activityId,
         pollutionClinicTotal,
         pollutionCliniService,
         onlinePollutionClinicTotal,
@@ -276,6 +276,264 @@ exports.createMeasure3 = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating Measure3 data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.upsertMeasure3 = async (req, res) => {
+  const {
+    activityId,
+    pollutionClinicTotal,
+    pollutionCliniService,
+    onlinePollutionClinicTotal,
+    onlinePollutionCliniService,
+    nurseryDustFreeTotal,
+    nurseryDustFreeService,
+    publicHealthDustFreeTotal,
+    publicHealthDustFreeService,
+    officeDustFreeTotal,
+    officeDustFreeService,
+    buildingDustFreeTotal,
+    buildingDustFreeService,
+    otherDustFreeTotal,
+    otherDustFreeService,
+    team3DoctorTotal,
+    team3DoctorService,
+    mobileDoctorTotal,
+    mobileDoctorService,
+    civilTakeCareTotal,
+    civilTakeCareService,
+    shertTeamProvTotal,
+    shertTeamProvService,
+    shertTeamDistTotal,
+    shertTeamDistService,
+    envoCccuTotal,
+    envoCccuService,
+    n95MaskGiveCivil,
+    surgicalMaskGiveCivil,
+    n95MaskGiveChild,
+    surgicalMaskGiveChild,
+    n95MaskGiveOlder,
+    surgicalMaskGiveOlder,
+    n95MaskGivePregnant,
+    surgicalMaskGivePregnant,
+    n95MaskGiveBedridden,
+    surgicalMaskGiveBedridden,
+    n95MaskGiveSick,
+    surgicalMaskGiveSick,
+    n95MaskGiveHeart,
+    surgicalMaskGiveHeart,
+    n95MaskGiveCopd,
+    surgicalMaskGiveCopd,
+    skyDoctor,
+    ambulance,
+    year,
+  } = req.body;
+
+  if (
+    !activityId ||
+    pollutionClinicTotal === undefined ||
+    pollutionCliniService === undefined ||
+    onlinePollutionClinicTotal === undefined ||
+    onlinePollutionCliniService === undefined ||
+    nurseryDustFreeTotal === undefined ||
+    nurseryDustFreeService === undefined ||
+    publicHealthDustFreeTotal === undefined ||
+    publicHealthDustFreeService === undefined ||
+    officeDustFreeTotal === undefined ||
+    officeDustFreeService === undefined ||
+    buildingDustFreeTotal === undefined ||
+    buildingDustFreeService === undefined ||
+    otherDustFreeTotal === undefined ||
+    otherDustFreeService === undefined ||
+    team3DoctorTotal === undefined ||
+    team3DoctorService === undefined ||
+    mobileDoctorTotal === undefined ||
+    mobileDoctorService === undefined ||
+    civilTakeCareTotal === undefined ||
+    civilTakeCareService === undefined ||
+    shertTeamProvTotal === undefined ||
+    shertTeamProvService === undefined ||
+    shertTeamDistTotal === undefined ||
+    shertTeamDistService === undefined ||
+    envoCccuTotal === undefined ||
+    envoCccuService === undefined ||
+    n95MaskGiveCivil === undefined ||
+    surgicalMaskGiveCivil === undefined ||
+    n95MaskGiveChild === undefined ||
+    surgicalMaskGiveChild === undefined ||
+    n95MaskGiveOlder === undefined ||
+    surgicalMaskGiveOlder === undefined ||
+    n95MaskGivePregnant === undefined ||
+    surgicalMaskGivePregnant === undefined ||
+    n95MaskGiveBedridden === undefined ||
+    surgicalMaskGiveBedridden === undefined ||
+    n95MaskGiveSick === undefined ||
+    surgicalMaskGiveSick === undefined ||
+    n95MaskGiveHeart === undefined ||
+    surgicalMaskGiveHeart === undefined ||
+    n95MaskGiveCopd === undefined ||
+    surgicalMaskGiveCopd === undefined ||
+    skyDoctor === undefined ||
+    ambulance === undefined ||
+    !year
+  ) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const [result] = await pool.query(
+      `INSERT INTO measure3 
+        (
+          activity_id, 
+          pollution_clinic_total, 
+          pollution_clini_service, 
+          online_pollution_clinic_total, 
+          online_pollution_clini_service,
+          nursery_dust_free_total, 
+          nursery_dust_free_service, 
+          public_health_dust_free_total, 
+          public_health_dust_free_service,
+          office_dust_free_total, 
+          office_dust_free_service, 
+          building_dust_free_total, 
+          building_dust_free_service,
+          other_dust_free_total, 
+          other_dust_free_service,
+          team3_doctor_total, 
+          team3_doctor_service, 
+          mobile_doctor_total, 
+          mobile_doctor_service,
+          civil_take_care_total, 
+          civil_take_care_service,
+          shert_team_prov_total, 
+          shert_team_prov_service,
+          shert_team_dist_total, 
+          shert_team_dist_service,
+          envo_cccu_total, 
+          envo_cccu_service,
+          n95_mask_give_civil, 
+          surgical_mask_give_civil,
+          n95_mask_give_child, 
+          surgical_mask_give_child,
+          n95_mask_give_older, 
+          surgical_mask_give_older,
+          n95_mask_give_pregnant, 
+          surgical_mask_give_pregnant,
+          n95_mask_give_bedridden, 
+          surgical_mask_give_bedridden,
+          n95_mask_give_sick, 
+          surgical_mask_give_sick,
+          n95_mask_give_heart, 
+          surgical_mask_give_heart,
+          n95_mask_give_copd, 
+          surgical_mask_give_copd,
+          sky_doctor, 
+          ambulance,
+          year
+        )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        pollution_clinic_total = VALUES(pollution_clinic_total),
+        pollution_clini_service = VALUES(pollution_clini_service),
+        online_pollution_clinic_total = VALUES(online_pollution_clinic_total),
+        online_pollution_clini_service = VALUES(online_pollution_clini_service),
+        nursery_dust_free_total = VALUES(nursery_dust_free_total),
+        nursery_dust_free_service = VALUES(nursery_dust_free_service),
+        public_health_dust_free_total = VALUES(public_health_dust_free_total),
+        public_health_dust_free_service = VALUES(public_health_dust_free_service),
+        office_dust_free_total = VALUES(office_dust_free_total),
+        office_dust_free_service = VALUES(office_dust_free_service),
+        building_dust_free_total = VALUES(building_dust_free_total),
+        building_dust_free_service = VALUES(building_dust_free_service),
+        other_dust_free_total = VALUES(other_dust_free_total),
+        other_dust_free_service = VALUES(other_dust_free_service),
+        team3_doctor_total = VALUES(team3_doctor_total),
+        team3_doctor_service = VALUES(team3_doctor_service),
+        mobile_doctor_total = VALUES(mobile_doctor_total),
+        mobile_doctor_service = VALUES(mobile_doctor_service),
+        civil_take_care_total = VALUES(civil_take_care_total),
+        civil_take_care_service = VALUES(civil_take_care_service),
+        shert_team_prov_total = VALUES(shert_team_prov_total),
+        shert_team_prov_service = VALUES(shert_team_prov_service),
+        shert_team_dist_total = VALUES(shert_team_dist_total),
+        shert_team_dist_service = VALUES(shert_team_dist_service),
+        envo_cccu_total = VALUES(envo_cccu_total),
+        envo_cccu_service = VALUES(envo_cccu_service),
+        n95_mask_give_civil = VALUES(n95_mask_give_civil),
+        surgical_mask_give_civil = VALUES(surgical_mask_give_civil),
+        n95_mask_give_child = VALUES(n95_mask_give_child),
+        surgical_mask_give_child = VALUES(surgical_mask_give_child),
+        n95_mask_give_older = VALUES(n95_mask_give_older),
+        surgical_mask_give_older = VALUES(surgical_mask_give_older),
+        n95_mask_give_pregnant = VALUES(n95_mask_give_pregnant),
+        surgical_mask_give_pregnant = VALUES(surgical_mask_give_pregnant),
+        n95_mask_give_bedridden = VALUES(n95_mask_give_bedridden),
+        surgical_mask_give_bedridden = VALUES(surgical_mask_give_bedridden),
+        n95_mask_give_sick = VALUES(n95_mask_give_sick),
+        surgical_mask_give_sick = VALUES(surgical_mask_give_sick),
+        n95_mask_give_heart = VALUES(n95_mask_give_heart),
+        surgical_mask_give_heart = VALUES(surgical_mask_give_heart),
+        n95_mask_give_copd = VALUES(n95_mask_give_copd),
+        surgical_mask_give_copd = VALUES(surgical_mask_give_copd),
+        sky_doctor = VALUES(sky_doctor),
+        ambulance = VALUES(ambulance)
+      `,
+      [
+        activityId,
+        pollutionClinicTotal,
+        pollutionCliniService,
+        onlinePollutionClinicTotal,
+        onlinePollutionCliniService,
+        nurseryDustFreeTotal,
+        nurseryDustFreeService,
+        publicHealthDustFreeTotal,
+        publicHealthDustFreeService,
+        officeDustFreeTotal,
+        officeDustFreeService,
+        buildingDustFreeTotal,
+        buildingDustFreeService,
+        otherDustFreeTotal,
+        otherDustFreeService,
+        team3DoctorTotal,
+        team3DoctorService,
+        mobileDoctorTotal,
+        mobileDoctorService,
+        civilTakeCareTotal,
+        civilTakeCareService,
+        shertTeamProvTotal,
+        shertTeamProvService,
+        shertTeamDistTotal,
+        shertTeamDistService,
+        envoCccuTotal,
+        envoCccuService,
+        n95MaskGiveCivil,
+        surgicalMaskGiveCivil,
+        n95MaskGiveChild,
+        surgicalMaskGiveChild,
+        n95MaskGiveOlder,
+        surgicalMaskGiveOlder,
+        n95MaskGivePregnant,
+        surgicalMaskGivePregnant,
+        n95MaskGiveBedridden,
+        surgicalMaskGiveBedridden,
+        n95MaskGiveSick,
+        surgicalMaskGiveSick,
+        n95MaskGiveHeart,
+        surgicalMaskGiveHeart,
+        n95MaskGiveCopd,
+        surgicalMaskGiveCopd,
+        skyDoctor,
+        ambulance,
+        year,
+      ]
+    );
+    res.status(200).json({
+      message: "Measure3 data upserted successfully",
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.error("Error upserting Measure3 data:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

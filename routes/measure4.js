@@ -2,12 +2,12 @@
 const express = require("express");
 const {
   getMeasure4,
-  createMeasure4,
+  upsertMeasure4,
 } = require("../controllers/measure4Controller");
 
 const router = express.Router();
 
 router.get("/", getMeasure4);
-router.post("/", createMeasure4);
+router.put("/", upsertMeasure4);
 
 module.exports = router;
