@@ -21,39 +21,32 @@ exports.getMeasure1 = async (req, res) => {
 
 exports.updateMeasure1 = async (req, res) => {
   // ใช้ key ใหม่ให้ตรงกับตาราง: activity_name, activity_detail, activity_date, year
-  const {
-    activity_id,
-    activity_name,
-    activity_detail,
-    activity_date,
-    year,
-    files,
-  } = req.body;
+  const { activityId, activityDetail, activityDate, year, files } = req.body;
 
-  if (!activity_id) {
+  if (!activityId) {
     return res.status(400).json({ error: "Missing activity_id" });
   }
 
   try {
     // พยายาม update record ในตาราง measure1 ถ้ามีอยู่แล้ว
     const [result] = await pool.query(
-      "UPDATE measure1 SET activity_name = ?, activity_detail = ? WHERE activity_id = ?",
-      [activity_name, activity_detail, activity_id]
+      "UPDATE measure1 SET activity_detail = ? WHERE activity_id = ?",
+      [activityDetail, activityId]
     );
 
     let measure1_id;
     if (result.affectedRows === 0) {
       // ถ้ายังไม่มี record ให้ insert ใหม่ โดยต้องระบุ activity_date และ year ด้วย
       const [insertResult] = await pool.query(
-        "INSERT INTO measure1 (activity_id, activity_name, activity_detail, activity_date, year) VALUES (?, ?, ?, ?, ?)",
-        [activity_id, activity_name, activity_detail, activity_date, year]
+        "INSERT INTO measure1 (activity_id, activity_detail, activity_date, year) VALUES (?, ?, ?, ?)",
+        [activityId, activityDetail, activityDate, year]
       );
       measure1_id = insertResult.insertId;
     } else {
       // ดึง measure1_id จาก record ที่อัปเดตแล้ว
       const [rows] = await pool.query(
         "SELECT measure1_id FROM measure1 WHERE activity_id = ?",
-        [activity_id]
+        [activityId]
       );
       measure1_id = rows[0].measure1_id;
     }
