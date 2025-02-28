@@ -41,7 +41,7 @@ exports.getMeasure2 = async (req, res) => {
 
 exports.createMeasure2 = async (req, res) => {
   const {
-    activity_id,
+    activityId,
     riskHealthInfo,
     riskHealthSocial,
     riskChildTotal,
@@ -61,7 +61,7 @@ exports.createMeasure2 = async (req, res) => {
   } = req.body;
 
   if (
-    !activity_id ||
+    !activityId ||
     riskHealthInfo === undefined ||
     riskHealthSocial === undefined ||
     riskChildTotal === undefined ||
@@ -91,7 +91,7 @@ exports.createMeasure2 = async (req, res) => {
          risk_copd_total, risk_copd_take_care, healthcare_officer, year)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        activity_id,
+        activityId,
         riskHealthInfo,
         riskHealthSocial,
         riskChildTotal,
