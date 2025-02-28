@@ -51,7 +51,8 @@ exports.getMeasure3 = async (req, res) => {
         CAST(m3.n95_mask_give_copd AS UNSIGNED) AS n95_mask_give_copd,
         CAST(m3.surgical_mask_give_copd AS UNSIGNED) AS surgical_mask_give_copd,
         CAST(m3.sky_doctor AS UNSIGNED) AS sky_doctor,
-        CAST(m3.ambulance AS UNSIGNED) AS ambulance
+        CAST(m3.ambulance AS UNSIGNED) AS ambulance,
+        CAST(m3.year AS UNSIGNED) AS year,
       FROM 
         measure3 m3
       JOIN 
@@ -291,14 +292,15 @@ exports.createMeasure3 = async (req, res) => {
 };
 
 exports.upsertMeasure3 = async (req, res) => {
+  // ใช้ค่า default ให้กับ field ที่อาจจะไม่มีใน req.body
   const {
     activityId,
     pollutionClinicTotal,
     pollutionCliniService,
     onlinePollutionClinicTotal,
     onlinePollutionCliniService,
-    mosquitoNetTotal,
-    mosquitoNetService,
+    mosquitoNetTotal, // กำหนด default เป็น 0
+    mosquitoNetService, // กำหนด default เป็น 0
     nurseryDustFreeTotal,
     nurseryDustFreeService,
     publicHealthDustFreeTotal,
@@ -342,6 +344,7 @@ exports.upsertMeasure3 = async (req, res) => {
     year,
   } = req.body;
 
+  // ตรวจสอบว่า field ที่จำเป็นครบถ้วนหรือไม่
   if (
     !activityId ||
     pollutionClinicTotal === undefined ||
