@@ -19,7 +19,7 @@ exports.createActivity = async (req, res) => {
   const { hospcode, provcode, distcode } = req.user; // สมมุติว่าคีย์ใน req.user ตรงกับ schema
 
   if (!hospcode || !provcode || !distcode || !activity_type || !year) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: req.user });
   }
 
   try {
