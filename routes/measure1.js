@@ -7,6 +7,6 @@ const {
 const router = express.Router();
 
 router.get("/", getMeasure1);
-router.post("/", updateMeasure1);
+router.put("/", updateMeasure1);
 
 module.exports = router;
