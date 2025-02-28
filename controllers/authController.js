@@ -132,7 +132,7 @@ const logout = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { id, hospcode, hospname, provcode } = req.user;
+  const { id, hospcode, hospname, provcode, distcode } = req.user;
   res.json({ id, hospcode, hospname, provcode, distcode });
 };
 

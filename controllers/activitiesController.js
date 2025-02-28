@@ -32,9 +32,9 @@ exports.createActivity = async (req, res) => {
   try {
     const [result] = await pool.query(
       `INSERT INTO activity 
-       (hosp_code, prov_code, dist_code, activity_type, activity_date, year) 
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [hospcode, provcode, distcode, activity_type, activity_date, year]
+       (activity_type,hosp_code, prov_code, dist_code, year) 
+       VALUES (?, ?, ?, ?, ?)`,
+      [activity_type, hospcode, provcode, distcode, year]
     );
     res
       .status(201)
