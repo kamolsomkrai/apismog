@@ -140,7 +140,7 @@ exports.upsertMeasure2 = async (req, res) => {
     healthcareOfficer,
     year,
   } = req.body;
-
+  console.log("Request body:", req.body);
   if (
     !activityId ||
     riskHealthInfo === undefined ||
