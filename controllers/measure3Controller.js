@@ -10,6 +10,8 @@ exports.getMeasure3 = async (req, res) => {
         CAST(m3.pollution_clini_service AS UNSIGNED) AS pollution_clini_service,
         CAST(m3.online_pollution_clinic_total AS UNSIGNED) AS online_pollution_clinic_total,
         CAST(m3.online_pollution_clini_service AS UNSIGNED) AS online_pollution_clini_service,
+        CAST(m3.mosquito_net_total AS UNSIGNED) AS mosquito_net_total,
+        CAST(m3.mosquito_net_service AS UNSIGNED) AS mosquito_net_service,
         CAST(m3.nursery_dust_free_total AS UNSIGNED) AS nursery_dust_free_total,
         CAST(m3.nursery_dust_free_service AS UNSIGNED) AS nursery_dust_free_service,
         CAST(m3.public_health_dust_free_total AS UNSIGNED) AS public_health_dust_free_total,
@@ -75,6 +77,8 @@ exports.createMeasure3 = async (req, res) => {
     pollutionCliniService,
     onlinePollutionClinicTotal,
     onlinePollutionCliniService,
+    mosquitoNetTotal,
+    mosquitoNetService,
     nurseryDustFreeTotal,
     nurseryDustFreeService,
     publicHealthDustFreeTotal,
@@ -124,6 +128,8 @@ exports.createMeasure3 = async (req, res) => {
     pollutionCliniService === undefined ||
     onlinePollutionClinicTotal === undefined ||
     onlinePollutionCliniService === undefined ||
+    mosquitoNetTotal === undefined ||
+    mosquitoNetService === undefined ||
     nurseryDustFreeTotal === undefined ||
     nurseryDustFreeService === undefined ||
     publicHealthDustFreeTotal === undefined ||
@@ -178,6 +184,8 @@ exports.createMeasure3 = async (req, res) => {
           pollution_clini_service, 
           online_pollution_clinic_total, 
           online_pollution_clini_service,
+          mosquito_net_total,
+          mosquito_net_service,
           nursery_dust_free_total, 
           nursery_dust_free_service, 
           public_health_dust_free_total, 
@@ -220,13 +228,15 @@ exports.createMeasure3 = async (req, res) => {
           ambulance,
           year
         ) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         activityId,
         pollutionClinicTotal,
         pollutionCliniService,
         onlinePollutionClinicTotal,
         onlinePollutionCliniService,
+        mosquitoNetTotal,
+        mosquitoNetService,
         nurseryDustFreeTotal,
         nurseryDustFreeService,
         publicHealthDustFreeTotal,
@@ -287,6 +297,8 @@ exports.upsertMeasure3 = async (req, res) => {
     pollutionCliniService,
     onlinePollutionClinicTotal,
     onlinePollutionCliniService,
+    mosquitoNetTotal,
+    mosquitoNetService,
     nurseryDustFreeTotal,
     nurseryDustFreeService,
     publicHealthDustFreeTotal,
@@ -336,6 +348,8 @@ exports.upsertMeasure3 = async (req, res) => {
     pollutionCliniService === undefined ||
     onlinePollutionClinicTotal === undefined ||
     onlinePollutionCliniService === undefined ||
+    mosquitoNetTotal === undefined ||
+    mosquitoNetService === undefined ||
     nurseryDustFreeTotal === undefined ||
     nurseryDustFreeService === undefined ||
     publicHealthDustFreeTotal === undefined ||
@@ -390,6 +404,8 @@ exports.upsertMeasure3 = async (req, res) => {
           pollution_clini_service, 
           online_pollution_clinic_total, 
           online_pollution_clini_service,
+          mosquito_net_total, 
+          mosquito_net_service, 
           nursery_dust_free_total, 
           nursery_dust_free_service, 
           public_health_dust_free_total, 
@@ -432,12 +448,14 @@ exports.upsertMeasure3 = async (req, res) => {
           ambulance,
           year
         )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE
         pollution_clinic_total = VALUES(pollution_clinic_total),
         pollution_clini_service = VALUES(pollution_clini_service),
         online_pollution_clinic_total = VALUES(online_pollution_clinic_total),
         online_pollution_clini_service = VALUES(online_pollution_clini_service),
+        mosquito_net_total = VALUES(mosquito_net_total),
+        mosquito_net_service = VALUES(mosquito_net_service),
         nursery_dust_free_total = VALUES(nursery_dust_free_total),
         nursery_dust_free_service = VALUES(nursery_dust_free_service),
         public_health_dust_free_total = VALUES(public_health_dust_free_total),
@@ -485,6 +503,8 @@ exports.upsertMeasure3 = async (req, res) => {
         pollutionCliniService,
         onlinePollutionClinicTotal,
         onlinePollutionCliniService,
+        mosquitoNetTotal,
+        mosquitoNetService,
         nurseryDustFreeTotal,
         nurseryDustFreeService,
         publicHealthDustFreeTotal,
