@@ -15,17 +15,10 @@ exports.getActivities = async (req, res) => {
 exports.createActivity = async (req, res) => {
   // คาดหวังว่า req.body จะมี activity_type, activity_date และ year
   // ส่วน req.user ควรมี hosp_code, prov_code และ dist_code
-  const { activity_type, activity_date, year } = req.body;
+  const { activity_type, year } = req.body;
   const { hospcode, provcode, distcode } = req.user; // สมมุติว่าคีย์ใน req.user ตรงกับ schema
 
-  if (
-    !hospcode ||
-    !provcode ||
-    !distcode ||
-    !activity_type ||
-    !activity_date ||
-    !year
-  ) {
+  if (!hospcode || !provcode || !distcode || !activity_type || !year) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
