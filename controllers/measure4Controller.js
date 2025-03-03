@@ -126,3 +126,33 @@ exports.upsertMeasure4 = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.getMeasure4show = async (req, res) => {
+  const { hospcode } = req.user;
+  try {
+    const [rows] = await pool.query(
+      `
+      SELECT 
+        m4.activity_id AS activityId,
+        CAST(m4.open_pheoc_date AS UNSIGNED) AS openPheocDate,
+        CAST(m4.close_pheoc_date AS UNSIGNED) AS closePheocDate,
+        CAST(m4.open_dont_burn_date AS UNSIGNED) AS openDontBurnDate,
+        CAST(m4.close_dont_burn_date AS UNSIGNED) AS closeDontBurnDate,
+        CAST(m4.law_enforcement AS UNSIGNED) AS lawEnforcement,
+      FROM 
+        measure4 m4
+      JOIN 
+        activity a ON m4.activity_id = a.activity_id
+      WHERE 
+        a.hosp_code = ?
+      GROUP BY 
+        p.provname
+      `,
+      [hospcode]
+    );
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error("Error fetching Measure2 data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

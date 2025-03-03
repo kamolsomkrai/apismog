@@ -245,14 +245,8 @@ exports.getMeasure2show = async (req, res) => {
         measure2 m2
       JOIN 
         activity a ON m2.activity_id = a.activity_id
-      JOIN 
-        hospitals c ON a.hosp_code = c.hospcode
-      JOIN 
-        provinces p ON c.provcode = p.provcode
       WHERE 
         a.hosp_code = ?
-      GROUP BY 
-        p.provname
       `,
       [hospcode]
     );

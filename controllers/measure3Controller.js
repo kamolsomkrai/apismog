@@ -560,3 +560,72 @@ exports.upsertMeasure3 = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.getMeasure3show = async (req, res) => {
+  const { hospcode } = req.user;
+  try {
+    const [rows] = await pool.query(
+      `
+      SELECT 
+        m3.activity_id AS activityId,
+        CAST(m3.pollution_clinic_total AS UNSIGNED) AS pollutionClinicTotal,
+        CAST(m3.pollution_clini_service AS UNSIGNED) AS pollutionCliniService,
+        CAST(m3.online_pollution_clinic_total AS UNSIGNED) AS onlinePollutionClinicTotal,
+        CAST(m3.online_pollution_clini_service AS UNSIGNED) AS onlinePollutionCliniService,
+        CAST(m3.mosquito_net_total AS UNSIGNED) AS mosquitoNetTotal,
+        CAST(m3.mosquito_net_service AS UNSIGNED) AS mosquitoNetService,
+        CAST(m3.nursery_dust_free_total AS UNSIGNED) AS nurseryDustFreeTotal,
+        CAST(m3.nursery_dust_free_service AS UNSIGNED) AS nurseryDustFreeService,
+        CAST(m3.public_health_dust_free_total AS UNSIGNED) AS publicHealthDustFreeTotal,
+        CAST(m3.public_health_dust_free_service AS UNSIGNED) AS publicHealthDustFreeService,
+        CAST(m3.office_dust_free_total AS UNSIGNED) AS officeDustFreeTotal,
+        CAST(m3.office_dust_free_service AS UNSIGNED) AS officeDustFreeService,
+        CAST(m3.building_dust_free_total AS UNSIGNED) AS buildingDustFreeTotal,
+        CAST(m3.building_dust_free_service AS UNSIGNED) AS buildingDustFreeService,
+        CAST(m3.other_dust_free_total AS UNSIGNED) AS otherDustFreeTotal,
+        CAST(m3.other_dust_free_service AS UNSIGNED) AS otherDustFreeService,
+        CAST(m3.team3_doctor_total AS UNSIGNED) AS team3DoctorTotal,
+        CAST(m3.team3_doctor_service AS UNSIGNED) AS team3DoctorService,
+        CAST(m3.mobile_doctor_total AS UNSIGNED) AS mobileDoctorTotal,
+        CAST(m3.mobile_doctor_service AS UNSIGNED) AS mobileDoctorService,
+        CAST(m3.civil_take_care_total AS UNSIGNED) AS civilTakeCareTotal,
+        CAST(m3.civil_take_care_service AS UNSIGNED) AS civilTakeCareService,
+        CAST(m3.shert_team_prov_total AS UNSIGNED) AS shertTeamProvTotal,
+        CAST(m3.shert_team_prov_service AS UNSIGNED) AS shertTeamProvService,
+        CAST(m3.shert_team_dist_total AS UNSIGNED) AS shertTeamDistTotal,
+        CAST(m3.shert_team_dist_service AS UNSIGNED) AS shertTeamDistService,
+        CAST(m3.envo_cccu_total AS UNSIGNED) AS envoCccuTotal,
+        CAST(m3.envo_cccu_service AS UNSIGNED) AS envoCccuService,
+        CAST(m3.n95_mask_give_civil AS UNSIGNED) AS n95MaskGiveCivil,
+        CAST(m3.surgical_mask_give_civil AS UNSIGNED) AS surgicalMaskGiveCivil,
+        CAST(m3.n95_mask_give_child AS UNSIGNED) AS n95MaskGiveChild,
+        CAST(m3.surgical_mask_give_child AS UNSIGNED) AS surgicalMaskGiveChild,
+        CAST(m3.n95_mask_give_older AS UNSIGNED) AS n95MaskGiveOlder,
+        CAST(m3.surgical_mask_give_older AS UNSIGNED) AS surgicalMaskGiveOlder,
+        CAST(m3.n95_mask_give_pregnant AS UNSIGNED) AS n95MaskGivePregnant,
+        CAST(m3.surgical_mask_give_pregnant AS UNSIGNED) AS surgicalMaskGivePregnant,
+        CAST(m3.n95_mask_give_bedridden AS UNSIGNED) AS n95MaskGiveBedridden,
+        CAST(m3.surgical_mask_give_bedridden AS UNSIGNED) AS surgicalMaskGiveBedridden,
+        CAST(m3.n95_mask_give_sick AS UNSIGNED) AS n95MaskGiveSick,
+        CAST(m3.surgical_mask_give_sick AS UNSIGNED) AS surgicalMaskGiveSick,
+        CAST(m3.n95_mask_give_heart AS UNSIGNED) AS n95MaskGiveHeart,
+        CAST(m3.surgical_mask_give_heart AS UNSIGNED) AS surgicalMaskGiveHeart,
+        CAST(m3.n95_mask_give_copd AS UNSIGNED) AS n95MaskGiveCopd,
+        CAST(m3.surgical_mask_give_copd AS UNSIGNED) AS surgicalMaskGiveCopd,
+        CAST(m3.sky_doctor AS UNSIGNED) AS skyDoctor,
+        CAST(m3.ambulance AS UNSIGNED) AS ambulance
+      FROM 
+        measure3 m3
+      JOIN 
+        activity a ON m3.activity_id = a.activity_id
+      WHERE 
+        a.hosp_code = ?
+      `,
+      [hospcode]
+    );
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error("Error fetching Measure2 data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
