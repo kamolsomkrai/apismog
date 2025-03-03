@@ -225,8 +225,7 @@ exports.getMeasure2show = async (req, res) => {
     const [rows] = await pool.query(
       `
       SELECT 
-        m2.measure2_id AS id,
-        p.provname AS province,
+        m2.activity_id AS activityId,
         CAST(m2.risk_health_info AS UNSIGNED) AS risk_health_info,
         CAST(m2.risk_health_social AS UNSIGNED) AS risk_health_social,
         CAST(m2.risk_child_total AS UNSIGNED) AS risk_child_total,
