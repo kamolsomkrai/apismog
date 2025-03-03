@@ -138,7 +138,7 @@ exports.getMeasure4show = async (req, res) => {
         m4.close_pheoc_date AS closePheocDate,
         m4.open_dont_burn_date AS openDontBurnDate,
         m4.close_dont_burn_date AS closeDontBurnDate,
-        CAST(m4.law_enforcement AS UNSIGNED) AS lawEnforcement,
+        CAST(m4.law_enforcement AS UNSIGNED) AS lawEnforcement
       FROM 
         measure4 m4
       JOIN 
