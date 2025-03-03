@@ -134,10 +134,10 @@ exports.getMeasure4show = async (req, res) => {
       `
       SELECT 
         m4.activity_id AS activityId,
-        CAST(m4.open_pheoc_date AS UNSIGNED) AS openPheocDate,
-        CAST(m4.close_pheoc_date AS UNSIGNED) AS closePheocDate,
-        CAST(m4.open_dont_burn_date AS UNSIGNED) AS openDontBurnDate,
-        CAST(m4.close_dont_burn_date AS UNSIGNED) AS closeDontBurnDate,
+        m4.open_pheoc_date AS openPheocDate,
+        m4.close_pheoc_date AS closePheocDate,
+        m4.open_dont_burn_date AS openDontBurnDate,
+        m4.close_dont_burn_date AS closeDontBurnDate,
         CAST(m4.law_enforcement AS UNSIGNED) AS lawEnforcement,
       FROM 
         measure4 m4
