@@ -218,3 +218,48 @@ exports.upsertMeasure2 = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.getMeasure2show = async (req, res) => {
+  const { hospcode } = req.user;
+  try {
+    const [rows] = await pool.query(
+      `
+      SELECT 
+        m2.measure2_id AS id,
+        p.provname AS province,
+        CAST(m2.risk_health_info AS UNSIGNED) AS risk_health_info,
+        CAST(m2.risk_health_social AS UNSIGNED) AS risk_health_social,
+        CAST(m2.risk_child_total AS UNSIGNED) AS risk_child_total,
+        CAST(m2.risk_child_take_care AS UNSIGNED) AS risk_child_take_care,
+        CAST(m2.risk_older_total AS UNSIGNED) AS risk_older_total,
+        CAST(m2.risk_older_take_care AS UNSIGNED) AS risk_older_take_care,
+        CAST(m2.risk_pregnant_total AS UNSIGNED) AS risk_pregnant_total,
+        CAST(m2.risk_pregnant_take_care AS UNSIGNED) AS risk_pregnant_take_care,
+        CAST(m2.risk_bedridden_total AS UNSIGNED) AS risk_bedridden_total,
+        CAST(m2.risk_bedridden_take_care AS UNSIGNED) AS risk_bedridden_take_care,
+        CAST(m2.risk_heart_total AS UNSIGNED) AS risk_heart_total,
+        CAST(m2.risk_heart_take_care AS UNSIGNED) AS risk_heart_take_care,
+        CAST(m2.risk_copd_total AS UNSIGNED) AS risk_copd_total,
+        CAST(m2.risk_copd_take_care AS UNSIGNED) AS risk_copd_take_care,
+        CAST(m2.healthcare_officer AS UNSIGNED) AS healthcare_officer
+      FROM 
+        measure2 m2
+      JOIN 
+        activity a ON m2.activity_id = a.activity_id
+      JOIN 
+        hospitals c ON a.hosp_code = c.hosp_code
+      JOIN 
+        provinces p ON c.prov_code = p.prov_code
+      WHERE 
+        a.hosp_code = ?
+      GROUP BY 
+        p.provname
+      `,
+      [hospcode]
+    );
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error("Error fetching Measure2 data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
