@@ -6,31 +6,32 @@ exports.getMeasure2 = async (req, res) => {
     const [rows] = await pool.query(`
       SELECT 
         p.provname AS province,
-        CAST(m2.risk_health_info AS UNSIGNED) AS risk_health_info,
-        CAST(m2.risk_health_social AS UNSIGNED) AS risk_health_social,
-        CAST(m2.risk_child_total AS UNSIGNED) AS risk_child_total,
-        CAST(m2.risk_child_take_care AS UNSIGNED) AS risk_child_take_care,
-        CAST(m2.risk_older_total AS UNSIGNED) AS risk_older_total,
-        CAST(m2.risk_older_take_care AS UNSIGNED) AS risk_older_take_care,
-        CAST(m2.risk_pregnant_total AS UNSIGNED) AS risk_pregnant_total,
-        CAST(m2.risk_pregnant_take_care AS UNSIGNED) AS risk_pregnant_take_care,
-        CAST(m2.risk_bedridden_total AS UNSIGNED) AS risk_bedridden_total,
-        CAST(m2.risk_bedridden_take_care AS UNSIGNED) AS risk_bedridden_take_care,
-        CAST(m2.risk_heart_total AS UNSIGNED) AS risk_heart_total,
-        CAST(m2.risk_heart_take_care AS UNSIGNED) AS risk_heart_take_care,
-        CAST(m2.risk_copd_total AS UNSIGNED) AS risk_copd_total,
-        CAST(m2.risk_copd_take_care AS UNSIGNED) AS risk_copd_take_care,
-        CAST(m2.healthcare_officer AS UNSIGNED) AS healthcare_officer
+        c.hospname AS hospital,
+        CAST(m2.risk_health_info AS UNSIGNED) AS riskHealthInfo,
+        CAST(m2.risk_health_social AS UNSIGNED) AS riskHealthSocial,
+        CAST(m2.risk_child_total AS UNSIGNED) AS riskChildTotal,
+        CAST(m2.risk_child_take_care AS UNSIGNED) AS riskChildTakeCare,
+        CAST(m2.risk_older_total AS UNSIGNED) AS riskOlderTotal,
+        CAST(m2.risk_older_take_care AS UNSIGNED) AS riskOlderTakeCare,
+        CAST(m2.risk_pregnant_total AS UNSIGNED) AS riskPregnantTotal,
+        CAST(m2.risk_pregnant_take_care AS UNSIGNED) AS riskPregnantTakeCare,
+        CAST(m2.risk_bedridden_total AS UNSIGNED) AS riskBedriddenTotal,
+        CAST(m2.risk_bedridden_take_care AS UNSIGNED) AS riskBedriddenTakeCare,
+        CAST(m2.risk_heart_total AS UNSIGNED) AS riskHeartTotal,
+        CAST(m2.risk_heart_take_care AS UNSIGNED) AS riskHeartTakeCare,
+        CAST(m2.risk_copd_total AS UNSIGNED) AS riskCopdTotal,
+        CAST(m2.risk_copd_take_care AS UNSIGNED) AS riskCopdTakeCare,
+        CAST(m2.healthcare_officer AS UNSIGNED) AS healthcareOfficer
       FROM 
         measure2 m2
       JOIN 
         activity a ON m2.activity_id = a.activity_id
       JOIN 
-        hospitals c ON a.hosp_code = c.hosp_code
+        hospitals c ON a.hosp_code = c.hospcode
       JOIN 
-        provinces p ON c.prov_code = p.prov_code
+        provinces p ON c.provcode = p.provcode
       GROUP BY 
-        p.provname;
+        p.provname,c.hospname;
     `);
     res.status(200).json(rows);
   } catch (error) {
