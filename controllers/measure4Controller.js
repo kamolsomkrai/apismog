@@ -145,8 +145,6 @@ exports.getMeasure4show = async (req, res) => {
         activity a ON m4.activity_id = a.activity_id
       WHERE 
         a.hosp_code = ?
-      GROUP BY 
-        p.provname
       `,
       [hospcode]
     );
