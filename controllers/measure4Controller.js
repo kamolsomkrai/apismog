@@ -165,7 +165,7 @@ exports.getMeasure4show = async (req, res) => {
         : null,
     }));
 
-    res.status(200).json(rows);
+    res.status(200).json(formattedRows);
   } catch (error) {
     console.error("Error fetching Measure2 data:", error);
     res.status(500).json({ error: "Internal Server Error" });
