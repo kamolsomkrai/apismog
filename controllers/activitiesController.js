@@ -4,7 +4,7 @@ const pool = require("../config/db2");
 exports.getActivities = async (req, res) => {
   try {
     // ดึงข้อมูลกิจกรรมจากตาราง activity (ตาม schema ที่ออกแบบไว้)
-    const [rows] = await pool.query("SELECT * FROM activity");
+    const [rows] = await pool.query("SELECT * FROM activity_group");
     res.status(200).json(rows);
   } catch (error) {
     console.error("Error fetching activities:", error);

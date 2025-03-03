@@ -21,7 +21,14 @@ exports.getMeasure1 = async (req, res) => {
 
 exports.updateMeasure1 = async (req, res) => {
   // ใช้ key ใหม่ให้ตรงกับตาราง: activity_name, activity_detail, activity_date, year
-  const { activityId, activityDetail, activityDate, year, files } = req.body;
+  const {
+    activityId,
+    activityCatalog,
+    activityDetail,
+    activityDate,
+    year,
+    files,
+  } = req.body;
 
   if (!activityId) {
     return res.status(400).json({ error: "Missing activity_id" });
@@ -38,8 +45,8 @@ exports.updateMeasure1 = async (req, res) => {
     if (result.affectedRows === 0) {
       // ถ้ายังไม่มี record ให้ insert ใหม่ โดยต้องระบุ activity_date และ year ด้วย
       const [insertResult] = await pool.query(
-        "INSERT INTO measure1 (activity_id, activity_detail, activity_date, year) VALUES (?, ?, ?, ?)",
-        [activityId, activityDetail, activityDate, year]
+        "INSERT INTO measure1 (activity_id, activity_catalog, activity_detail, activity_date, year) VALUES (?, ?, ?, ?)",
+        [activityId, activityCatalog, activityDetail, activityDate, year]
       );
       measure1_id = insertResult.insertId;
     } else {
