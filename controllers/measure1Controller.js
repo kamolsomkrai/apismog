@@ -45,7 +45,7 @@ exports.updateMeasure1 = async (req, res) => {
     if (result.affectedRows === 0) {
       // ถ้ายังไม่มี record ให้ insert ใหม่ โดยต้องระบุ activity_date และ year ด้วย
       const [insertResult] = await pool.query(
-        "INSERT INTO measure1 (activity_id, activity_catalog, activity_detail, activity_date, year) VALUES (?, ?, ?, ?)",
+        "INSERT INTO measure1 (activity_id, activity_catalog, activity_detail, activity_date, year) VALUES (?, ?, ?, ?, ?)",
         [activityId, activityCatalog, activityDetail, activityDate, year]
       );
       measure1_id = insertResult.insertId;
