@@ -148,6 +148,23 @@ exports.getMeasure4show = async (req, res) => {
       `,
       [hospcode]
     );
+
+    const formattedRows = rows.map((row) => ({
+      ...row,
+      openPheocDate: row.openPheocDate
+        ? new Date(row.openPheocDate).toISOString().split("T")[0]
+        : null,
+      closePheocDate: row.closePheocDate
+        ? new Date(row.closePheocDate).toISOString().split("T")[0]
+        : null,
+      openDontBurnDate: row.openDontBurnDate
+        ? new Date(row.openDontBurnDate).toISOString().split("T")[0]
+        : null,
+      closeDontBurnDate: row.closeDontBurnDate
+        ? new Date(row.closeDontBurnDate).toISOString().split("T")[0]
+        : null,
+    }));
+
     res.status(200).json(rows);
   } catch (error) {
     console.error("Error fetching Measure2 data:", error);
