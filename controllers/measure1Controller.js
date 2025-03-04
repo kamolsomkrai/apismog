@@ -1,16 +1,25 @@
 // src/controllers/measure1Controller.js
+// const pool = require("../config/db1");
 const pool = require("../config/db2");
 
 exports.getMeasure1 = async (req, res) => {
   try {
     const [rows] = await pool.query(`
-      SELECT p.provname as province,
-             COUNT(m.measure1_id) as measure1_count
-      FROM measure1 m
-      JOIN activities a ON m.activity_id = a.measure1_id
-      JOIN hospitals c ON a.hospcode = c.hospcode
-      JOIN provinces p ON c.provcode = p.provcode
-      GROUP BY p.provname;
+      SELECT
+        p.provname,
+        a.activity_id AS activityType,
+        ca.des AS description,
+        YEAR(activity_date) AS activityYear,
+        COUNT( a.activity_id ) AS activityCount
+      FROM
+        activity_datas a
+        JOIN chospital ch ON ch.hoscode = a.hospcode
+        JOIN provinces p ON ch.provcode = p.provcode
+        JOIN c_activity ca ON ca.id = a.activity_id 
+      GROUP BY
+        a.activity_id,
+        p.provcode,
+        YEAR(activity_date)
     `);
     res.status(200).json(rows);
   } catch (error) {

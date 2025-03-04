@@ -61,6 +61,7 @@ const login = async (req, res) => {
         hospname: user.hospname,
         provcode: user.provcode,
         distcode: user.distcode,
+        ssj_ok: user.ssj_ok,
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
@@ -110,6 +111,7 @@ const getToken = async (req, res) => {
         hospname: user.hospname,
         provcode: user.provcode,
         distcode: user.distcode,
+        ssj_ok: user.ssj_ok,
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
@@ -132,8 +134,8 @@ const logout = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { id, hospcode, hospname, provcode, distcode } = req.user;
-  res.json({ id, hospcode, hospname, provcode, distcode });
+  const { id, hospcode, hospname, provcode, distcode, ssj_ok } = req.user;
+  res.json({ id, hospcode, hospname, provcode, distcode, ssj_ok });
 };
 
 module.exports = {
