@@ -140,12 +140,12 @@ const handleSmogImport = async (req, res) => {
 
     const recordCount = validRecords.length;
     const hospcode = req.user.hospcode;
-    console.debug(
-      "Total records to process:",
-      recordCount,
-      "for hospcode:",
-      hospcode
-    );
+    // console.debug(
+    //   "Total records to process:",
+    //   recordCount,
+    //   "for hospcode:",
+    //   hospcode
+    // );
 
     try {
       const connection = await db.getConnection();
