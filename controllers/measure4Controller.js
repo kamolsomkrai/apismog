@@ -12,13 +12,11 @@ exports.getMeasure4 = async (req, res) => {
         m4.open_dont_burn_date AS openDontBurnDate,
         m4.close_dont_burn_date AS closeDontBurnDate,
         m4.law_enforcement AS lawEnforcement,
-        m4.year,
-        m4.created_at,
-        m4.updated_at
+        m4.year
       FROM measure4 m4
       JOIN activity a ON m4.activity_id = a.activity_id
-      JOIN hospitals c ON a.hosp_code = c.hosp_code
-      JOIN provinces p ON c.prov_code = p.prov_code
+      JOIN hospitals c ON a.hosp_code = c.hospcode
+      JOIN provinces p ON c.provcode = p.provcode
       GROUP BY p.provname
     `);
     res.status(200).json(rows);

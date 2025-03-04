@@ -58,9 +58,9 @@ exports.getMeasure3 = async (req, res) => {
       JOIN 
         activity a ON m3.activity_id = a.activity_id
       JOIN 
-        hospitals c ON a.hosp_code = c.hosp_code
+        hospitals c ON a.hosp_code = c.hospcode
       JOIN 
-        provinces p ON c.prov_code = p.prov_code
+        provinces p ON c.provcode = p.provcode
       GROUP BY 
         p.provname
     `);
