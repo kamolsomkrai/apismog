@@ -1,4 +1,4 @@
-const pool = require("../config/db1");
+const pool = require("../config/db");
 
 exports.getHospitalList = async (req, res) => {
   const { provcode, ssj_ok } = req.user;
