@@ -132,6 +132,11 @@ const handleSmogImport = async (req, res) => {
       ]);
     }
     // console.debug("All records validated. Valid records:", validRecords);
+    // ตรวจสอบก่อนทำธุรกรรมว่ามี records ให้ insert/update หรือไม่
+    if (validRecords.length === 0) {
+      console.debug("ไม่มี records ที่จะประมวลผล");
+      return res.status(400).json({ message: "ไม่มี records ที่จะประมวลผล" });
+    }
 
     const recordCount = validRecords.length;
     const hospcode = req.user.hospcode;

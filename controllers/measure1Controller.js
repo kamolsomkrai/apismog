@@ -5,9 +5,9 @@ exports.getMeasure1 = async (req, res) => {
   try {
     const [rows] = await pool.query(`
       SELECT p.provname as province,
-             COUNT(m.activity_name) as measure1_count
+             COUNT(m.measure1_id) as measure1_count
       FROM measure1 m
-      JOIN activities a ON m.activity_id = a.id
+      JOIN activities a ON m.activity_id = a.measure1_id
       JOIN hospitals c ON a.hospcode = c.hospcode
       JOIN provinces p ON c.provcode = p.provcode
       GROUP BY p.provname;
