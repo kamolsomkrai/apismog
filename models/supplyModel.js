@@ -25,13 +25,21 @@ const getSupplyById = async (id, hospcode) => {
   return rows[0];
 };
 
-const createSupply = async (hospcode, name, description, quantity, unit) => {
+const createSupply = async (
+  hospital_id,
+  provcode,
+  supply_id,
+  quantity_stock,
+  quantity_add,
+  quantity_minus,
+  quantity_total
+) => {
   const [result] = await pool.query(
     "INSERT INTO supplies (hospcode, provcode, supplie_id, quantity_stock, quantity_add, quantity_minus, quantity_total) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
-      hospcode,
+      hospital_id,
       provcode,
-      supplie_id,
+      supply_id,
       quantity_stock,
       quantity_add,
       quantity_minus,

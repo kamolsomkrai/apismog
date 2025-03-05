@@ -64,8 +64,8 @@ const getSupply = async (req, res) => {
 const createNewSupply = async (req, res) => {
   const { provcode } = req.user;
   const {
-    supplie_id,
-    hospcode,
+    supply_id,
+    hospital_id,
     quantity_stock,
     quantity_add,
     quantity_minus,
@@ -74,15 +74,15 @@ const createNewSupply = async (req, res) => {
 
   try {
     const insertedId = await createSupply(
-      hospcode,
+      hospital_id,
       provcode,
-      supplie_id,
+      supply_id,
       quantity_stock,
       quantity_add,
       quantity_minus,
       quantity_total
     );
-    const newSupply = await getSupplyById(insertedId, hospcode);
+    const newSupply = await getSupplyById(insertedId, hospital_id);
     res.status(201).json(newSupply);
   } catch (err) {
     console.error("Error creating supply:", err);
