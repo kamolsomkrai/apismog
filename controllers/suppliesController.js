@@ -32,9 +32,9 @@ const getAllSupplies = async (req, res) => {
 };
 
 const getSupplyDatas = async (req, res) => {
-  const { hospcode, supplie_id } = req.body;
+  const { hospcode, supply_id } = req.body;
   try {
-    const supplyData = await getSupplyData(hospcode, supplie_id);
+    const supplyData = await getSupplyData(hospcode, supply_id);
     res.json(supplyData);
   } catch (err) {
     console.error("Error fetching supply data:", err);
@@ -139,4 +139,5 @@ module.exports = {
   createNewSupply,
   updateExistingSupply,
   deleteExistingSupply,
+  getSupplyData,
 };

@@ -6,6 +6,7 @@ const {
   createNewSupply,
   updateExistingSupply,
   deleteExistingSupply,
+  getSupplyData,
 } = require("../controllers/suppliesController");
 const {
   authenticateTokenFromCookies,
@@ -22,6 +23,8 @@ router.get("/:id", authenticateTokenFromCookies, getSupply);
 
 // POST /api/supplies - สร้าง supply ใหม่
 router.post("/", authenticateTokenFromCookies, createNewSupply);
+
+router.post("/supplydata", authenticateTokenFromCookies, getSupplyData);
 
 // PUT /api/supplies/:id - แก้ไข supply ที่ระบุ
 router.put("/:id", authenticateTokenFromCookies, updateExistingSupply);
