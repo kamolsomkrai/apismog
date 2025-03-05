@@ -7,6 +7,7 @@ const {
   deleteSupply,
   countSupplies,
   getSupplyData,
+  getSupplyByHos,
 } = require("../models/supplyModel");
 
 const getAllSupplies = async (req, res) => {
@@ -136,6 +137,20 @@ const deleteExistingSupply = async (req, res) => {
   }
 };
 
+const getSupplyHospital = async (req, res) => {
+  try {
+    const { hospcode, provcode, ssj_ok } = req.user;
+    const result = await getSupplyByHos(hospcode, provcode, ssj_ok);
+    if (result.length > 0) {
+      res.status(200).json(result);
+    } else {
+      res.status(404).json({ message: "ไม่พบข้อมูล" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllSupplies,
   getSupply,
@@ -143,4 +158,5 @@ module.exports = {
   updateExistingSupply,
   deleteExistingSupply,
   getSupplyDatas,
+  getSupplyHospital,
 };

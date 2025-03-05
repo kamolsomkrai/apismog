@@ -92,6 +92,51 @@ const getSupplyData = async (hospcode, supply_id) => {
   return rows;
 };
 
+const getSupplyByHos = async (hospcode, provcode, ssj_ok) => {
+  // กำหนดเงื่อนไขสำหรับการกรองข้อมูล: ค่าเริ่มต้นใช้ provcode
+  let field = "provcode";
+  let fieldValue = provcode;
+  // ถ้า ssj_ok.data[0] เท่ากับ 0 ให้ใช้ hospcode ในการกรอง
+  if (ssj_ok?.data[0] === 0) {
+    field = "hospcode";
+    fieldValue = hospcode;
+  }
+
+  // สร้าง SQL query แบบไดนามิกโดยใช้เงื่อนไขที่กำหนด
+  const query = `
+    SELECT
+      s.id,
+      s.hospcode,
+      h.hospname,
+      s.supplie_id,
+      sc.suppliename,
+      sc.supplietype,
+      sc.suppliecatalog,
+      s.quantity_stock,
+      s.provcode,
+      p.provname,
+      s.updated_at 
+    FROM supplies s
+    JOIN (
+      SELECT hospcode, provcode, supplie_id, MAX(created_at) AS latest_created_at 
+      FROM supplies sa 
+      WHERE sa.${field} = ?
+      GROUP BY hospcode, provcode, supplie_id 
+    ) latest ON s.hospcode = latest.hospcode 
+      AND s.provcode = latest.provcode 
+      AND s.supplie_id = latest.supplie_id 
+      AND s.created_at = latest.latest_created_at
+    JOIN hospitals h ON s.hospcode = h.hospcode
+    JOIN supplies_catalog sc ON s.supplie_id = sc.supplie_id
+    JOIN provinces p ON s.provcode = p.provcode 
+    WHERE s.${field} = ?
+  `;
+  const params = [fieldValue, fieldValue];
+
+  const [rows] = await pool.query(query, params);
+  return rows;
+};
+
 module.exports = {
   getSupplies,
   getSupplyById,
@@ -100,4 +145,5 @@ module.exports = {
   deleteSupply,
   countSupplies,
   getSupplyData,
+  getSupplyByHos,
 };
