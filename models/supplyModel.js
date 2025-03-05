@@ -76,10 +76,12 @@ const countSupplies = async (hospcode, search) => {
 };
 
 const getSupplyData = async (hospcode, supply_id) => {
-  await pool.query(
-    "SELECT	s.quantity_stock FROM	supplies s WHERE s.hospcode = ?	AND s.supplie_id = ? ORDER BY	created_at DESC LIMIT 1",
+  // ดึงข้อมูลและ return ผลลัพธ์กลับไป
+  const [rows] = await pool.query(
+    "SELECT s.quantity_stock FROM supplies s WHERE s.hospcode = ? AND s.supplie_id = ? ORDER BY created_at DESC LIMIT 1",
     [hospcode, supply_id]
   );
+  return rows;
 };
 
 module.exports = {

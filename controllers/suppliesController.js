@@ -32,13 +32,16 @@ const getAllSupplies = async (req, res) => {
 };
 
 const getSupplyDatas = async (req, res) => {
-  const { hospcode, supply_id } = req.body;
   try {
-    const supplyData = await getSupplyData(hospcode, supply_id);
-    res.json(supplyData);
-  } catch (err) {
-    console.error("Error fetching supply data:", err);
-    res.status(500).json({ message: "Internal server error." });
+    const { hospcode, supply_id } = req.body;
+    const result = await getSupplyData(hospcode, supply_id);
+    if (result.length > 0) {
+      res.status(200).json(result[0]);
+    } else {
+      res.status(404).json({ message: "ไม่พบข้อมูล" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
