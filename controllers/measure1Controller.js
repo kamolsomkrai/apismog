@@ -1,10 +1,11 @@
 // src/controllers/measure1Controller.js
 // const pool = require("../config/db1");
 const pool = require("../config/db2");
+const poolsmog = require("../config/db3");
 
 exports.getMeasure1 = async (req, res) => {
   try {
-    const [rows] = await pool.query(`
+    const [rows] = await poolsmog.query(`
       SELECT
         p.provname,
         a.activity_id AS activityType,
