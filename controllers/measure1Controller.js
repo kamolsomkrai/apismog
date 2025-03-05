@@ -7,6 +7,7 @@ exports.getMeasure1 = async (req, res) => {
   try {
     const [rows] = await poolsmog.query(`
       SELECT
+        p.provcode,
         p.provname,
         a.activity_id AS activityType,
         ca.des AS description,
