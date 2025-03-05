@@ -75,6 +75,13 @@ const countSupplies = async (hospcode, search) => {
   return rows[0].count;
 };
 
+const getSupplyData = async (hospcode, supplie_id) => {
+  await pool.query(
+    "SELECT	s.quantity_stock FROM	supplies s WHERE s.hospcode = ?	AND s.supplie_id = ? ORDER BY	created_at DESC LIMIT 1",
+    [hospcode, supplie_id]
+  );
+};
+
 module.exports = {
   getSupplies,
   getSupplyById,
@@ -82,4 +89,5 @@ module.exports = {
   updateSupply,
   deleteSupply,
   countSupplies,
+  getSupplyData,
 };

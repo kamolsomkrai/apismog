@@ -6,6 +6,7 @@ const {
   updateSupply,
   deleteSupply,
   countSupplies,
+  getSupplyData,
 } = require("../models/supplyModel");
 
 const getAllSupplies = async (req, res) => {
@@ -30,6 +31,17 @@ const getAllSupplies = async (req, res) => {
   }
 };
 
+const getSupplyDatas = async (req, res) => {
+  const { hospcode, supplie_id } = req.body;
+  try {
+    const supplyData = await getSupplyData(hospcode, supplie_id);
+    res.json(supplyData);
+  } catch (err) {
+    console.error("Error fetching supply data:", err);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 const getSupply = async (req, res) => {
   const { hospcode } = req.user;
   const { id } = req.params;
@@ -47,9 +59,10 @@ const getSupply = async (req, res) => {
 };
 
 const createNewSupply = async (req, res) => {
-  const { hospcode, provcode } = req.user;
+  const { provcode } = req.user;
   const {
     supplie_id,
+    hospcode,
     quantity_stock,
     quantity_add,
     quantity_minus,
