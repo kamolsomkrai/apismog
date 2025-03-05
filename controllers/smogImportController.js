@@ -66,10 +66,10 @@ const handleSmogImport = async (req, res) => {
         .status(400)
         .json({ message: "Decompression failed.", error: err.toString() });
     }
-    console.debug(
-      "Decompression successful. Data length:",
-      decompressedData.length
-    );
+    // console.debug(
+    //   "Decompression successful. Data length:",
+    //   decompressedData.length
+    // );
 
     let data;
     try {

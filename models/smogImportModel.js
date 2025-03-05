@@ -21,7 +21,7 @@ const insertSmogImport = async (connection, records) => {
       admit = VALUES(admit),
       er = VALUES(er)
   `;
-  console.debug("Executing bulk insert/update with records:", records);
+  // console.debug("Executing bulk insert/update with records:", records);
   await connection.query(sql, [records]);
 };
 
