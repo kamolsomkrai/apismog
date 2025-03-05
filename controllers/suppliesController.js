@@ -139,5 +139,5 @@ module.exports = {
   createNewSupply,
   updateExistingSupply,
   deleteExistingSupply,
-  getSupplyData,
+  getSupplyDatas,
 };
