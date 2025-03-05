@@ -18,7 +18,7 @@ exports.getHospitalList = async (req, res) => {
       params.push(provcode);
     }
 
-    query += " GROUP BY u.hospcode ";
+    query += " GROUP BY u.hospcode ORDER BY ch.hoscode";
 
     const [rows] = await pool.query(query, params);
     res.status(200).json(rows);
