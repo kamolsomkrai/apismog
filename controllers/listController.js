@@ -10,10 +10,10 @@ exports.getHospitalList = async (req, res) => {
     `;
     let params = [];
 
-    if (ssj_ok === 1) {
+    if (ssj_ok?.data[0] === 1) {
       query += " WHERE u.provcode = ? AND u.ssj_ok = 0 ";
       params.push(provcode);
-    } else if (ssj_ok === 0) {
+    } else if (ssj_ok?.data[0] === 0) {
       query += " WHERE u.provcode = ? ";
       params.push(provcode);
     }
