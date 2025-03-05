@@ -22,5 +22,5 @@ router.get("/supplielist", getSupplyList);
 router.get("/summary", getSummarys);
 router.post("/hospitallist", authenticateTokenFromCookies, getHospitalList);
 router.post("/supplydata", authenticateTokenFromCookies, getSupplyDatas);
-router.post("/supplyhos", authenticateTokenFromCookies, getSupplyHospital);
+router.get("/supplyhos", authenticateTokenFromCookies, getSupplyHospital);
 module.exports = router;
