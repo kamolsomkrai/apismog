@@ -23,6 +23,25 @@ const getSupplyList = async (req, res) => {
   }
 };
 
+const getSummaryDashboard = async (req, res) => {
+  try {
+    // ดึงข้อมูลโดยไม่ใช้ cache เพราะข้อมูลเปลี่ยนบ่อย
+    const supplylist = await getSummary(); // ตรวจสอบฟังก์ชัน getSummary ว่าเป็น async และทำงานได้เร็วที่สุด
+    res.json(supplylist);
+  } catch (error) {
+    console.error("Error fetching summary dashboard:", error);
+
+    // เพิ่มการจัดการข้อผิดพลาดที่เจาะจง
+    if (error instanceof DatabaseError) {
+      res.status(500).json({ message: "Database connection error." });
+    } else if (error instanceof SyntaxError) {
+      res.status(400).json({ message: "Invalid request syntax." });
+    } else {
+      res.status(500).json({ message: "Internal server error." });
+    }
+  }
+};
+
 const getSummarys = async (req, res) => {
   try {
     // ดึงข้อมูลจาก supplies_list
@@ -92,4 +111,4 @@ const getSummarys = async (req, res) => {
   }
 };
 
-module.exports = { getSupplyList, getSummarys };
+module.exports = { getSupplyList, getSummarys, getSummaryDashboard };

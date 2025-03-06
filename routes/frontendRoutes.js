@@ -3,6 +3,7 @@ const express = require("express");
 const {
   getSupplyList,
   getSummarys,
+  getSummaryDashboard,
 } = require("../controllers/frontendController");
 
 const {
@@ -19,7 +20,7 @@ const {
 const router = express.Router();
 
 router.get("/supplielist", getSupplyList);
-router.get("/summary", getSummarys);
+router.get("/summary", getSummaryDashboard);
 router.post("/hospitallist", authenticateTokenFromCookies, getHospitalList);
 router.post("/supplydata", authenticateTokenFromCookies, getSupplyDatas);
 router.get("/supplyhos", authenticateTokenFromCookies, getSupplyHospital);
