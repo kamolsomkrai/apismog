@@ -12,3 +12,5 @@ node_modules/
 .dockerignore
 
 # Other files and folders you want to ignore
+
+package-lock.json
