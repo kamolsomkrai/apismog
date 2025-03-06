@@ -10,8 +10,8 @@ router.get(
   "/diseasebyhospital",
   [
     check("province").optional().trim().escape(),
-    check("startDate").optional().isISO8601(),
-    check("endDate").optional().isISO8601(),
+    check("startdate").optional().isISO8601(),
+    check("enddate").optional().isISO8601(),
     check("search").optional().trim().escape(),
   ],
   getDiseaseByHospitalController

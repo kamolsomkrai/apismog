@@ -9,13 +9,13 @@ const getDiseaseByHospitalController = async (req, res) => {
   }
 
   // รับพารามิเตอร์จาก req.query
-  const { province, startDate, endDate, search } = req.query;
+  const { province, start_date, end_date, search } = req.query;
 
   try {
     const supplyList = await getDiseaseByHospital({
       province,
-      startDate,
-      endDate,
+      start_date,
+      end_date,
       search,
     });
     res.json(supplyList);
