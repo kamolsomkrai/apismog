@@ -6,7 +6,7 @@ const {
 } = require("../controllers/dashboardController");
 const router = express.Router();
 
-router.get(
+router.post(
   "/diseasebyhospital",
   [
     check("province").optional().trim().escape(),
