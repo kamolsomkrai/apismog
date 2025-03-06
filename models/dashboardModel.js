@@ -3,12 +3,12 @@ const pool = require("../config/dbrabad");
 
 const getDiseaseByHospital = async ({
   province,
-  startDate,
-  endDate,
+  start_date,
+  end_date,
   search,
 }) => {
   let sql =
-    "SELECT sdh.groupname AS disease_name, sdh.service_date, sdh.province, sdh.hospital_name, sdh.patient_count FROM summary_disease_hospital sdh";
+    "SELECT sdh.groupname AS disease_name, DATE_FORMAT(sdh.service_date, '%Y-%m-%d') AS service_date, sdh.province, sdh.hospital_name, sdh.patient_count FROM summary_disease_hospital sdh";
   let conditions = [];
   let params = [];
 
@@ -17,15 +17,15 @@ const getDiseaseByHospital = async ({
     params.push(province);
   }
 
-  if (startDate && endDate) {
+  if (start_date && end_date) {
     conditions.push("service_date BETWEEN ? AND ?");
-    params.push(startDate, endDate);
-  } else if (startDate) {
+    params.push(start_date, end_date);
+  } else if (start_date) {
     conditions.push("service_date >= ?");
-    params.push(startDate);
-  } else if (endDate) {
+    params.push(start_date);
+  } else if (end_date) {
     conditions.push("service_date <= ?");
-    params.push(endDate);
+    params.push(end_date);
   }
 
   if (search) {
