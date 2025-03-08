@@ -47,7 +47,8 @@ const getDiseaseByHospital = async ({
 };
 
 const getPm25 = async ({ province, start_date, end_date, search }) => {
-  let sql = "SELECT * FROM pm25_dang ";
+  let sql =
+    "SELECT pm.*,d.distcode FROM pm25_dang pm JOIN district_th d ON pm.amphur = d.dist_name_TH ";
   let conditions = [];
   let params = [];
 
