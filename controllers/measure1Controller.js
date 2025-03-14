@@ -5,23 +5,22 @@ const poolsmog = require("../config/db3");
 
 exports.getMeasure1 = async (req, res) => {
   try {
-    const [rows] = await poolsmog.query(`
-      SELECT
+    const [rows] = await pool.query(`
+      SELECT 
         p.provcode,
         p.provname,
-        a.activity_id AS activityType,
-        ca.des AS description,
-        YEAR(activity_date) AS activityYear,
-        COUNT( a.activity_id ) AS activityCount
-      FROM
-        activity_datas a
-        JOIN chospital ch ON ch.hoscode = a.hospcode
-        JOIN provinces p ON ch.provcode = p.provcode
-        JOIN c_activity ca ON ca.id = a.activity_id 
-      GROUP BY
-        a.activity_id,
-        p.provcode,
-        YEAR(activity_date)
+        m1.activity_catalog as activityType,
+        ag.des AS description,
+        YEAR(m1.created_at) AS activityYear,
+        COUNT(prov_code) AS activityCount
+      FROM measure1 m1 
+      JOIN activity a ON m1.activity_id = a.activity_id
+      JOIN activity_group ag ON m1.activity_catalog = ag.id
+      JOIN provinces p ON a.prov_code = p.provcode
+      GROUP BY 
+        a.prov_code,
+        m1.activity_catalog,
+        YEAR(m1.created_at)
     `);
     res.status(200).json(rows);
   } catch (error) {
