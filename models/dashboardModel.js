@@ -86,4 +86,48 @@ const getPm25 = async ({ province, start_date, end_date, search }) => {
   }
 };
 
-module.exports = { getDiseaseByHospital, getPm25 };
+const getActivityList = async () => {
+  const sql = `
+    SELECT 
+        m1.activity_id,
+        m1.activity_catalog,
+        ag.des AS catalogname,
+        m1.activity_detail,
+        a.hosp_code,
+        hos.hospname,
+        a.prov_code,
+        p.provname,
+        a.dist_code,
+        m1.updated_at,
+        (
+            SELECT 
+                JSON_ARRAYAGG(
+                    JSON_OBJECT('file_path', m1u.file_path)
+                )
+            FROM 
+                measure1_upload m1u
+            WHERE 
+                m1u.measure1_id = m1.measure1_id
+        ) AS uploads
+    FROM 
+        measure1 m1
+    JOIN 
+        activity a ON m1.activity_id = a.activity_id
+    JOIN 
+        hospitals hos ON hos.hospcode = a.hosp_code
+    JOIN 
+        provinces p ON p.provcode = a.prov_code
+    JOIN
+        activity_group ag ON ag.id = m1.activity_catalog;
+  `;
+
+  try {
+    const [rows] = await pool.query(sql);
+    return rows;
+  } catch (error) {
+    console.error("Error executing query:", error);
+    throw error;
+  }
+};
+
+module.exports = { getDiseaseByHospital, getPm25, getActivityList };

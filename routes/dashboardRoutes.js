@@ -4,6 +4,7 @@ const { check } = require("express-validator");
 const {
   getDiseaseByHospitalController,
   getPm25Controller,
+  getActivityListController,
 } = require("../controllers/dashboardController");
 const router = express.Router();
 
@@ -28,5 +29,7 @@ router.post(
   ],
   getPm25Controller
 );
+
+router.get("/activitylist", getActivityListController);
 
 module.exports = router;
