@@ -1,5 +1,6 @@
 // models/dashboardModel.js
 const pool = require("../config/dbrabad");
+const pool1 = require("../config/db2");
 
 const getDiseaseByHospital = async ({
   province,
@@ -122,7 +123,7 @@ const getActivityList = async () => {
   `;
 
   try {
-    const [rows] = await pool.query(sql);
+    const [rows] = await pool1.query(sql);
     return rows;
   } catch (error) {
     console.error("Error executing query:", error);
