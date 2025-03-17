@@ -1,6 +1,10 @@
 // controllers/dashboardController.js
 const { validationResult } = require("express-validator");
-const { getDiseaseByHospital, getPm25 } = require("../models/dashboardModel");
+const {
+  getDiseaseByHospital,
+  getPm25,
+  getActivityList,
+} = require("../models/dashboardModel");
 
 const getDiseaseByHospitalController = async (req, res) => {
   const errors = validationResult(req);
