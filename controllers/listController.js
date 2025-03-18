@@ -1,7 +1,7 @@
 const pool = require("../config/db");
 
 exports.getHospitalList = async (req, res) => {
-  const { provcode, ssj_ok } = req.user;
+  const { hospcode, provcode, ssj_ok } = req.user;
   try {
     let query = `
       SELECT ch.hoscode AS hospcode, ch.hosname AS hospname 
@@ -15,7 +15,7 @@ exports.getHospitalList = async (req, res) => {
       params.push(provcode);
     } else if (ssj_ok?.data[0] === 0) {
       query += " WHERE u.hospcode = ? ";
-      params.push(provcode);
+      params.push(hospcode);
     }
 
     query += " GROUP BY u.hospcode ORDER BY ch.hoscode";
