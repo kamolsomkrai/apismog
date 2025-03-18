@@ -7,21 +7,21 @@ exports.getMeasure2 = async (req, res) => {
       SELECT 
         p.provname AS province,
         c.hospname AS hospital,
-        CAST(m2.risk_health_info AS UNSIGNED) AS riskHealthInfo,
-        CAST(m2.risk_health_social AS UNSIGNED) AS riskHealthSocial,
-        CAST(m2.risk_child_total AS UNSIGNED) AS riskChildTotal,
-        CAST(m2.risk_child_take_care AS UNSIGNED) AS riskChildTakeCare,
-        CAST(m2.risk_older_total AS UNSIGNED) AS riskOlderTotal,
-        CAST(m2.risk_older_take_care AS UNSIGNED) AS riskOlderTakeCare,
-        CAST(m2.risk_pregnant_total AS UNSIGNED) AS riskPregnantTotal,
-        CAST(m2.risk_pregnant_take_care AS UNSIGNED) AS riskPregnantTakeCare,
-        CAST(m2.risk_bedridden_total AS UNSIGNED) AS riskBedriddenTotal,
-        CAST(m2.risk_bedridden_take_care AS UNSIGNED) AS riskBedriddenTakeCare,
-        CAST(m2.risk_heart_total AS UNSIGNED) AS riskHeartTotal,
-        CAST(m2.risk_heart_take_care AS UNSIGNED) AS riskHeartTakeCare,
-        CAST(m2.risk_copd_total AS UNSIGNED) AS riskCopdTotal,
-        CAST(m2.risk_copd_take_care AS UNSIGNED) AS riskCopdTakeCare,
-        CAST(m2.healthcare_officer AS UNSIGNED) AS healthcareOfficer
+        SUM(CAST(m2.risk_health_info AS UNSIGNED)) AS riskHealthInfo,
+        SUM(CAST(m2.risk_health_social AS UNSIGNED)) AS riskHealthSocial,
+        SUM(CAST(m2.risk_child_total AS UNSIGNED)) AS riskChildTotal,
+        SUM(CAST(m2.risk_child_take_care AS UNSIGNED)) AS riskChildTakeCare,
+        SUM(CAST(m2.risk_older_total AS UNSIGNED)) AS riskOlderTotal,
+        SUM(CAST(m2.risk_older_take_care AS UNSIGNED)) AS riskOlderTakeCare,
+        SUM(CAST(m2.risk_pregnant_total AS UNSIGNED)) AS riskPregnantTotal,
+        SUM(CAST(m2.risk_pregnant_take_care AS UNSIGNED)) AS riskPregnantTakeCare,
+        SUM(CAST(m2.risk_bedridden_total AS UNSIGNED)) AS riskBedriddenTotal,
+        SUM(CAST(m2.risk_bedridden_take_care AS UNSIGNED)) AS riskBedriddenTakeCare,
+        SUM(CAST(m2.risk_heart_total AS UNSIGNED)) AS riskHeartTotal,
+        SUM(CAST(m2.risk_heart_take_care AS UNSIGNED)) AS riskHeartTakeCare,
+        SUM(CAST(m2.risk_copd_total AS UNSIGNED)) AS riskCopdTotal,
+        SUM(CAST(m2.risk_copd_take_care AS UNSIGNED)) AS riskCopdTakeCare,
+        SUM(CAST(m2.healthcare_officer AS UNSIGNED)) AS healthcareOfficer
       FROM 
         measure2 m2
       JOIN 
