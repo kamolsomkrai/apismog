@@ -14,7 +14,7 @@ exports.getHospitalList = async (req, res) => {
       query += " WHERE u.provcode = ? AND u.ssj_ok = 0 ";
       params.push(provcode);
     } else if (ssj_ok?.data[0] === 0) {
-      query += " WHERE u.provcode = ? ";
+      query += " WHERE u.hospcode = ? ";
       params.push(provcode);
     }
 
