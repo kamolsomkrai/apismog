@@ -31,7 +31,7 @@ exports.getMeasure2 = async (req, res) => {
       JOIN 
         provinces p ON c.provcode = p.provcode
       GROUP BY 
-        p.provname,c.hospname;
+        p.provname;
     `);
     res.status(200).json(rows);
   } catch (error) {
