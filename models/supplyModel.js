@@ -34,10 +34,14 @@ const createSupply = async (
   quantity_minus,
   quantity_total
 ) => {
+  // ตรวจสอบว่า hospital_id ถูกส่งเข้ามา
+  if (!hospital_id) {
+    throw new Error("hospital_id is required");
+  }
   const [result] = await pool.query(
     "INSERT INTO supplies (hospcode, provcode, supplie_id, quantity_stock, quantity_add, quantity_minus, quantity_total) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [
-      hospital_id,
+      hospital_id, // ใช้ hospital_id จาก req.body เป็นค่า hospcode
       provcode,
       supply_id,
       quantity_stock,

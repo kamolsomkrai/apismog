@@ -65,8 +65,8 @@ const getSupply = async (req, res) => {
 const createNewSupply = async (req, res) => {
   const { provcode } = req.user;
   const {
-    supply_id,
     hospital_id,
+    supply_id,
     quantity_stock,
     quantity_add,
     quantity_minus,
