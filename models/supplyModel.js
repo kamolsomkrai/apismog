@@ -67,11 +67,8 @@ const updateSupply = async (
   );
 };
 
-const deleteSupply = async (id, hospcode) => {
-  await pool.query("DELETE FROM supplies WHERE id = ? AND hospcode = ?", [
-    id,
-    hospcode,
-  ]);
+const deleteSupply = async (id) => {
+  await pool.query("DELETE FROM supplies WHERE id = ?", [id]);
 };
 
 const countSupplies = async (hospcode, search) => {

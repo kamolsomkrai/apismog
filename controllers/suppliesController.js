@@ -124,12 +124,12 @@ const deleteExistingSupply = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const existingSupply = await getSupplyById(id, hospcode);
+    const existingSupply = await getSupplyById(id);
     if (!existingSupply) {
       return res.status(404).json({ message: "Supply not found." });
     }
 
-    await deleteSupply(id, hospcode);
+    await deleteSupply(id);
     res.json({ message: "Supply deleted successfully." });
   } catch (err) {
     console.error("Error deleting supply:", err);
