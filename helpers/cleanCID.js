@@ -1,16 +1,14 @@
-// helpers/cleadCID.js
+const crypto = require("crypto");
+const SALT = "btJIqHmRJZcJyflD"; // กำหนดค่า salt ที่ใช้ในการ hash
+
 const cleadCID = (value) => {
   if (typeof value === "string") {
-    if (
-      value ===
-      "2727d0ded95451fb564bac5cfe3c1e87e7b18243a1a54ea2aa3553b7b67a9634"
-    ) {
-      return null;
+    // ถ้า CID มีความยาว 13 ให้ hash ด้วย sha256 พร้อม salt
+    if (value.length === 13) {
+      const hash = crypto.createHash("sha256");
+      hash.update(SALT + value);
+      value = hash.digest("hex");
     }
-    if (value === "0") {
-      return null;
-    }
-    if (value === "0000000000000") return null;
   }
   return value;
 };
