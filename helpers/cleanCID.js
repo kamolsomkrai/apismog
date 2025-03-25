@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const SALT = "btJIqHmRJZcJyflD"; // กำหนดค่า salt ที่ใช้ในการ hash
 
-const cleadCID = (value) => {
+const cleanCID = (value) => {
   if (typeof value === "string") {
     // ถ้า CID มีความยาว 13 ให้ hash ด้วย sha256 พร้อม salt
     if (value.length === 13) {
@@ -13,4 +13,4 @@ const cleadCID = (value) => {
   return value;
 };
 
-module.exports = cleadCID;
+module.exports = cleanCID;

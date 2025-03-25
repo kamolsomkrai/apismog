@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const cleanDiagcode = require("../helpers/cleanDiagcode");
+const cleanCID = require("../helpers/cleanCID");
 
 const smogImportSchema = Joi.object({
   hospcode: Joi.string().max(5).required(),
@@ -22,7 +23,7 @@ const smogImportSchema = Joi.object({
   cid: Joi.string()
     .max(64)
     .custom((value, helpers) => {
-      return cleadCID(value);
+      return cleanCID(value);
     }, "Custom diagcode cleaning"),
   appoint: Joi.string().valid("Y", "N").required(),
   admit: Joi.string().valid("Y", "N").required(),
