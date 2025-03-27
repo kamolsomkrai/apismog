@@ -131,4 +131,17 @@ const getActivityList = async () => {
   }
 };
 
-module.exports = { getDiseaseByHospital, getPm25, getActivityList };
+const getCluster = async () => {
+  const sql = `
+  SELECT yr, hospcode, hosname, province, amphur, diagtype, diagcode, patient_count FROM cluster
+  `;
+  try {
+    const [row] = await pool.query(sql);
+    return row;
+  } catch (error) {
+    console.error("Error executing query:", error);
+    throw error;
+  }
+};
+
+module.exports = { getDiseaseByHospital, getPm25, getActivityList, getCluster };

@@ -5,6 +5,7 @@ const {
   getDiseaseByHospitalController,
   getPm25Controller,
   getActivityListController,
+  getClusterController,
 } = require("../controllers/dashboardController");
 const router = express.Router();
 
@@ -31,5 +32,6 @@ router.post(
 );
 
 router.get("/activitylist", getActivityListController);
+router.get("/cluster", getClusterController);
 
 module.exports = router;
