@@ -133,7 +133,7 @@ const getActivityList = async () => {
 
 const getCluster = async () => {
   const sql = `
-  SELECT yr, mm, hospcode, hosname, province, amphur, diagtype, diagcode, patient_count FROM cluster
+  SELECT yr, mm, hospcode, hosname, province, amphur, groupname, diagtype, patient_count FROM cluster
   `;
   try {
     const [row] = await pool.query(sql);
