@@ -42,14 +42,9 @@ const deletePatientInjuryDead = async (req, res) => {
 };
 
 const getInjuryRtiController = async (req, res) => {
-  const { hospname } = req.user;
   const { start_date, end_date } = req.body;
 
   try {
-    if (hospname !== "rabadadmin") {
-      return res.status(404).json({ message: "ไม่มีสิทธิเข้าถึงข้อมูล" });
-    }
-
     const data = await getInjuryRti(start_date, end_date);
     res.json(data);
   } catch (err) {
@@ -59,14 +54,9 @@ const getInjuryRtiController = async (req, res) => {
 };
 
 const getRiskVehicleController = async (req, res) => {
-  const { hospname } = req.user;
   const { start_date, end_date } = req.body;
 
   try {
-    if (hospname !== "rabadadmin") {
-      return res.status(404).json({ message: "ไม่มีสิทธิเข้าถึงข้อมูล" });
-    }
-
     const data = await getRiskVehicle(start_date, end_date);
     res.json(data);
   } catch (err) {
@@ -76,14 +66,9 @@ const getRiskVehicleController = async (req, res) => {
 };
 
 const getRiskRtiController = async (req, res) => {
-  const { hospname } = req.user;
   const { start_date, end_date } = req.body;
 
   try {
-    if (hospname !== "rabadadmin") {
-      return res.status(404).json({ message: "ไม่มีสิทธิเข้าถึงข้อมูล" });
-    }
-
     const data = await getRiskRti(start_date, end_date);
     res.json(data);
   } catch (err) {
@@ -93,14 +78,9 @@ const getRiskRtiController = async (req, res) => {
 };
 
 const getRiskRoadController = async (req, res) => {
-  const { hospname } = req.user;
   const { start_date, end_date } = req.body;
 
   try {
-    if (hospname !== "rabadadmin") {
-      return res.status(404).json({ message: "ไม่มีสิทธิเข้าถึงข้อมูล" });
-    }
-
     const data = await getRiskRoad(start_date, end_date);
     res.json(data);
   } catch (err) {
