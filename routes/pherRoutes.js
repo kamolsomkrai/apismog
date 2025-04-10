@@ -3,10 +3,10 @@ const { check } = require("express-validator");
 const {
   getPatientInjuryDead,
   deletePatientInjuryDead,
-  getInjuryRti,
-  getRiskVehicle,
-  getRiskRti,
-  getRiskRoad,
+  getInjuryRtiController,
+  getRiskVehicleController,
+  getRiskRtiController,
+  getRiskRoadController,
 } = require("../controllers/pherController");
 const {
   authenticateTokenFromCookies,
@@ -31,25 +31,25 @@ router.put(
 router.post(
   "/getinjuryrti",
   [check("start_date").isISO8601(), check("end_date").isISO8601()],
-  getInjuryRti
+  getInjuryRtiController
 );
 
 router.post(
   "/getriskvehicle",
   [check("start_date").isISO8601(), check("end_date").isISO8601()],
-  getRiskVehicle
+  getRiskVehicleController
 );
 
 router.post(
   "/riskrti",
   [check("start_date").isISO8601(), check("end_date").isISO8601()],
-  getRiskRti
+  getRiskRtiController
 );
 
 router.post(
   "/riskroad",
   [check("start_date").isISO8601(), check("end_date").isISO8601()],
-  getRiskRoad
+  getRiskRoadController
 );
 
 module.exports = router;

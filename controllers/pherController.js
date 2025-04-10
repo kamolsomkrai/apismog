@@ -41,7 +41,7 @@ const deletePatientInjuryDead = async (req, res) => {
   }
 };
 
-const getInjuryRti = async (req, res) => {
+const getInjuryRtiController = async (req, res) => {
   const { hospname } = req.user;
   const { start_date, end_date } = req.body;
 
@@ -58,7 +58,7 @@ const getInjuryRti = async (req, res) => {
   }
 };
 
-const getRiskVehicle = async (req, res) => {
+const getRiskVehicleController = async (req, res) => {
   const { hospname } = req.user;
   const { start_date, end_date } = req.body;
 
@@ -75,7 +75,7 @@ const getRiskVehicle = async (req, res) => {
   }
 };
 
-const getRiskRti = async (req, res) => {
+const getRiskRtiController = async (req, res) => {
   const { hospname } = req.user;
   const { start_date, end_date } = req.body;
 
@@ -92,7 +92,7 @@ const getRiskRti = async (req, res) => {
   }
 };
 
-const getRiskRoad = async (req, res) => {
+const getRiskRoadController = async (req, res) => {
   const { hospname } = req.user;
   const { start_date, end_date } = req.body;
 
@@ -112,8 +112,8 @@ const getRiskRoad = async (req, res) => {
 module.exports = {
   getPatientInjuryDead,
   deletePatientInjuryDead,
-  getInjuryRti,
-  getRiskVehicle,
-  getRiskRti,
-  getRiskRoad,
+  getInjuryRtiController,
+  getRiskVehicleController,
+  getRiskRtiController,
+  getRiskRoadController,
 };
