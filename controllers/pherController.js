@@ -1,11 +1,11 @@
-import {
+const {
   getPher,
   updatePher,
   getInjuryRti,
   getRiskVehicle,
   getRiskRti,
   getRiskRoad,
-} from "../models/pherModel.js";
+} = require("../models/pherModel.js");
 const getPatientInjuryDead = async (req, res) => {
   const { hospname } = req.user;
   const { id } = req.params;
