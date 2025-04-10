@@ -22,6 +22,7 @@ const measure2Routes = require("./routes/measure2");
 const measure3Routes = require("./routes/measure3");
 const measure4Routes = require("./routes/measure4");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const pherRoutes = require("./routes/pherRoutes");
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use("/api/measure2", measure2Routes);
 app.use("/api/measure3", measure3Routes);
 app.use("/api/measure4", measure4Routes);
 app.use("/api/public", dashboardRoutes);
+app.use("/api/pher", pherRoutes);
 
 app.use(
   "/api/smog_import",
