@@ -1,6 +1,6 @@
 import {
   getPher,
-  updatepher,
+  updatePher,
   getInjuryRti,
   getRiskVehicle,
   getRiskRti,
@@ -33,7 +33,7 @@ const deletePatientInjuryDead = async (req, res) => {
       return res.status(404).json({ message: "ไม่มีสิทธิเข้าถึงข้อมูล" });
     }
 
-    const data = await updatepher(guid, hospname);
+    const data = await updatePher(guid, hospname);
     res.json({ message: "ลบข้อมูลสำเร็จ" });
   } catch (err) {
     console.error("ไม่สามารถลบข้อมูลได้:", err);
