@@ -223,7 +223,7 @@ ORDER BY
 
 module.exports = {
   getPher,
-  updatepher,
+  updatePher,
   getInjuryRti,
   getRiskVehicle,
   getRiskRti,
