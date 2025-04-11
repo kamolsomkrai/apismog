@@ -7,6 +7,7 @@ const {
   getRiskVehicleController,
   getRiskRtiController,
   getRiskRoadController,
+  getInjuryTotalController,
 } = require("../controllers/pherController");
 const {
   authenticateTokenFromCookies,
@@ -32,6 +33,11 @@ router.post(
   "/getinjuryrti",
   [check("start_date").isISO8601(), check("end_date").isISO8601()],
   getInjuryRtiController
+);
+router.post(
+  "/getinjurytotal",
+  [check("start_date").isISO8601(), check("end_date").isISO8601()],
+  getInjuryTotalController
 );
 
 router.post(

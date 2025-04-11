@@ -2,6 +2,7 @@ const {
   getPher,
   updatePher,
   getInjuryRti,
+  getInjuryTotal,
   getRiskVehicle,
   getRiskRti,
   getRiskRoad,
@@ -53,6 +54,18 @@ const getInjuryRtiController = async (req, res) => {
   }
 };
 
+const getInjuryTotalController = async (req, res) => {
+  const { start_date, end_date } = req.body;
+
+  try {
+    const data = await getInjuryTotal(start_date, end_date);
+    res.json(data);
+  } catch (err) {
+    console.error("ไม่สามารถดึงข้อมูลได้:", err);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 const getRiskVehicleController = async (req, res) => {
   const { start_date, end_date } = req.body;
 
@@ -93,6 +106,7 @@ module.exports = {
   getPatientInjuryDead,
   deletePatientInjuryDead,
   getInjuryRtiController,
+  getInjuryTotalController,
   getRiskVehicleController,
   getRiskRtiController,
   getRiskRoadController,

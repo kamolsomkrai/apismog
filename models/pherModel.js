@@ -97,6 +97,77 @@ ORDER BY hospital_province, accident_date`;
   return rows;
 };
 
+const getInjuryTotal = async (start_date, end_date) => {
+  const query = `WITH current_year_RTI_data AS (
+    SELECT
+        accident_date,
+        COUNT(*) AS injury_case,
+        COUNT(death_date) AS dead_case
+    FROM pher_rti
+    WHERE 
+        is_deleted = 0 
+        AND accident_date BETWEEN ? AND ?
+    GROUP BY hospital_province, accident_date
+),
+previous_year_data AS (
+    SELECT
+        DATE_ADD(accident_date, INTERVAL 1 YEAR) AS accident_date,
+        hospital_province,
+        COUNT(*) AS prev_injury_case,
+        COUNT(death_date) AS prev_dead_case
+    FROM pher_rti
+    WHERE 
+        is_deleted = 0 
+        AND accident_date BETWEEN DATE_SUB(?, INTERVAL 1 YEAR) 
+                              AND DATE_SUB(?, INTERVAL 1 YEAR)
+    GROUP BY hospital_province, accident_date
+),
+combined_data AS (
+    SELECT
+        c.accident_date,
+        c.injury_case,
+        c.dead_case,
+        p.prev_injury_case,
+        p.prev_dead_case,
+        SUM(c.injury_case) OVER (PARTITION BY c.hospital_province ORDER BY c.accident_date) AS cumulative_injury_2025,
+        SUM(c.dead_case) OVER (PARTITION BY c.hospital_province ORDER BY c.accident_date) AS cumulative_dead_2025,
+        SUM(p.prev_injury_case) OVER (PARTITION BY c.hospital_province ORDER BY c.accident_date) AS cumulative_injury_2024,
+        SUM(p.prev_dead_case) OVER (PARTITION BY c.hospital_province ORDER BY c.accident_date) AS cumulative_dead_2024
+    FROM current_year_RTI_data c
+    LEFT JOIN previous_year_data p 
+        ON c.accident_date = p.accident_date 
+        AND c.hospital_province = p.hospital_province
+)
+SELECT
+    accident_date,
+    injury_case,
+    dead_case,
+    prev_injury_case,
+    prev_dead_case,
+    CASE 
+        WHEN prev_injury_case = 0 THEN 0.00
+        ELSE ROUND(((injury_case - prev_injury_case) / prev_injury_case) * 100, 2)
+    END AS injury_pct_diff,
+    CASE 
+        WHEN prev_dead_case = 0 THEN 0.00
+        ELSE ROUND(((dead_case - prev_dead_case) / prev_dead_case) * 100, 2)
+    END AS dead_pct_diff,
+    cumulative_injury_2025,
+    cumulative_dead_2025,
+    cumulative_injury_2024,
+    cumulative_dead_2024
+FROM combined_data
+ORDER BY accident_date`;
+  const [rows] = await conn.query(query, [
+    start_date,
+    end_date,
+    start_date,
+    end_date,
+  ]);
+  conn.release();
+  return rows;
+};
+
 const getRiskVehicle = async (start_date, end_date) => {
   const conn = await pool.getConnection();
   const query = `WITH vehicle_data AS (
@@ -225,6 +296,7 @@ module.exports = {
   getPher,
   updatePher,
   getInjuryRti,
+  getInjuryTotal,
   getRiskVehicle,
   getRiskRti,
   getRiskRoad,
