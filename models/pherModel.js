@@ -98,6 +98,7 @@ ORDER BY hospital_province, accident_date`;
 };
 
 const getInjuryTotal = async (start_date, end_date) => {
+  const conn = await pool.getConnection();
   const query = `WITH current_year_RTI_data AS (
     SELECT
         accident_date,
