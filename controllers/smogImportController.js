@@ -15,12 +15,9 @@ const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY.trim(); // key 32 bytes
 const ENCRYPTION_IV = process.env.ENCRYPTION_IV.trim();
 
 function decryptData(encryptedData) {
-  console.debug("Starting decryption process...");
-  // แปลงข้อมูลที่เข้ามาจาก base64 เป็น Buffer
+  // console.debug("Starting decryption process...");
   const encryptedBuffer = Buffer.from(encryptedData, "base64");
-  //   console.debug("Encrypted buffer length:", encryptedBuffer.length);
 
-  // สร้าง decipher โดยใช้ algorithm 'aes-256-cbc'
   const decipher = crypto.createDecipheriv(
     "aes-256-cbc",
     Buffer.from(ENCRYPTION_KEY, "utf8"),
@@ -33,10 +30,6 @@ function decryptData(encryptedData) {
       decipher.update(encryptedBuffer),
       decipher.final(),
     ]);
-    // console.debug(
-    //   "Decryption successful. Decrypted data length:",
-    //   decrypted.length
-    // );
   } catch (err) {
     console.error("Decryption error:", err);
     throw err;
@@ -46,37 +39,34 @@ function decryptData(encryptedData) {
 
 const handleSmogImport = async (req, res) => {
   // console.debug("Received smog import request with body:", req.body);
-  // รับข้อมูล encrypted (ซึ่งถูก compress แล้ว) จาก req.body.data
   const encryptedData = req.body.data;
   let decryptedData;
   try {
     decryptedData = decryptData(encryptedData);
   } catch (decErr) {
     console.error("Decryption failed:", decErr);
+    res.locals.errorMessage = "Decryption failed: " + decErr.message;
     return res
       .status(400)
       .json({ message: "Decryption failed.", error: decErr.toString() });
   }
 
-  // Decompress ข้อมูลที่ถูกถอดรหัส
+  // Decompress
   zlib.gunzip(decryptedData, async (err, decompressedData) => {
     if (err) {
       console.error("Decompression error:", err);
+      res.locals.errorMessage = "Decompression failed: " + err.message;
       return res
         .status(400)
         .json({ message: "Decompression failed.", error: err.toString() });
     }
-    // console.debug(
-    //   "Decompression successful. Data length:",
-    //   decompressedData.length
-    // );
 
     let data;
     try {
       data = JSON.parse(decompressedData.toString());
-      //   console.debug("JSON parsed successfully. Parsed data:", data);
     } catch (parseErr) {
       console.error("JSON Parse error:", parseErr);
+      res.locals.errorMessage = "Invalid JSON data: " + parseErr.message;
       return res
         .status(400)
         .json({ message: "Invalid JSON data.", error: parseErr.toString() });
@@ -84,31 +74,27 @@ const handleSmogImport = async (req, res) => {
 
     if (!Array.isArray(data)) {
       console.error("Data is not an array:", data);
+      res.locals.errorMessage = "Data should be an array of records.";
       return res
         .status(400)
         .json({ message: "Data should be an array of records." });
     }
 
-    // Validate และ clean แต่ละ record
+    // Validate
     const validRecords = [];
     for (let i = 0; i < data.length; i++) {
       let record = data[i];
-      //   console.debug(`Validating record ${i + 1}:`, record);
       if (record.diagcode) {
         record.diagcode = cleanDiagcode(record.diagcode);
-        // console.debug(`Cleaned diagcode for record ${i + 1}:`, record.diagcode);
       }
 
       const { error, value } = smogImportSchema.validate(record);
       if (error) {
-        console.error(
-          `Validation error in record ${i + 1}:`,
-          error.details[0].message
-        );
+        const msg = `Validation error in record ${i + 1}: ${error.details[0].message}`;
+        console.error("Validation error:", msg);
+        res.locals.errorMessage = msg;
         return res.status(400).json({
-          message: `Validation error in record ${i + 1}: ${
-            error.details[0].message
-          }`,
+          message: msg,
         });
       }
       validRecords.push([
@@ -131,45 +117,40 @@ const handleSmogImport = async (req, res) => {
         value.er,
       ]);
     }
-    // console.debug("All records validated. Valid records:", validRecords);
-    // ตรวจสอบก่อนทำธุรกรรมว่ามี records ให้ insert/update หรือไม่
+
     if (validRecords.length === 0) {
       console.debug("ไม่มี records ที่จะประมวลผล");
+      res.locals.errorMessage = "No records to process.";
       return res.status(400).json({ message: "ไม่มี records ที่จะประมวลผล" });
     }
 
     const recordCount = validRecords.length;
     const hospcode = req.user.hospcode;
-    // console.debug(
-    //   "Total records to process:",
-    //   recordCount,
-    //   "for hospcode:",
-    //   hospcode
-    // );
 
     try {
       const connection = await db.getConnection();
-      console.debug("Database connection acquired.");
+      // console.debug("Database connection acquired.");
       try {
         await connection.beginTransaction();
-        console.debug("Transaction started.");
+        // console.debug("Transaction started.");
 
-        // Bulk insert/update ในตาราง smog_import
         await insertSmogImport(connection, validRecords);
-        console.debug("Bulk insert/update into smog_import executed.");
+        // console.debug("Bulk insert executed.");
 
-        // Insert log ลง api_imports
         await insertApiImport(
           connection,
           hospcode,
           req.body.method || 0,
           recordCount
         );
-        console.debug("Insert into api_imports executed.");
+        // console.debug("Insert api_imports executed.");
 
         await connection.commit();
-        console.debug("Transaction committed successfully.");
+        // console.debug("Transaction committed.");
         connection.release();
+
+        // LOGGING CONTEXT
+        res.locals.recordCount = recordCount;
 
         res.json({
           message: "Data received and stored successfully.",
@@ -179,12 +160,15 @@ const handleSmogImport = async (req, res) => {
         await connection.rollback();
         connection.release();
         console.error("Database error during transaction:", dbErr);
+        res.locals.errorMessage = "Database transaction error: " + dbErr.message;
+        res.locals.errorDetail = dbErr.stack;
         res
           .status(500)
           .json({ message: "Internal server error.", error: dbErr.toString() });
       }
     } catch (connErr) {
       console.error("Database connection error:", connErr);
+      res.locals.errorMessage = "Database connection error: " + connErr.message;
       res
         .status(500)
         .json({ message: "Internal server error.", error: connErr.toString() });
@@ -197,7 +181,6 @@ const getSmogImportRecordsHandler = async (req, res) => {
   console.debug("Request to fetch smog import records for hospcode:", hospcode);
   try {
     const records = await getSmogImportRecords(hospcode);
-    // console.debug("Records fetched successfully:", records);
     res.json(records);
   } catch (err) {
     console.error("Error fetching records:", err);

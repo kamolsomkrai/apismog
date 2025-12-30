@@ -12,6 +12,10 @@ const {
   externalApiLimiter,
   generalApiLimiter,
 } = require("./middlewares/rateLimiter");
+// New Middlewares
+const authenticateApiKey = require("./middlewares/authenticateApiKey");
+const apiLogger = require("./middlewares/apiLogger");
+
 const authRoutes = require("./routes/authRoutes");
 const suppliesRoutes = require("./routes/suppliesRoutes");
 const smogImportRoutes = require("./routes/smogImportRoutes");
@@ -39,9 +43,8 @@ app.use(morgan("combined"));
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:3000",
-    // credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-api-key"], // Added x-api-key
   })
 );
 
@@ -60,11 +63,13 @@ app.use("/api/measure4", measure4Routes);
 app.use("/api/public", dashboardRoutes);
 app.use("/api/pher", pherRoutes);
 
+// Updated route with API Key Auth and Logger
 app.use(
   "/api/smog_import",
-  authenticateTokenFromHeader,
-  externalApiLimiter,
-  smogImportRoutes
+  apiLogger,               // 1. Start Logger
+  authenticateApiKey,      // 2. Auth Check (Checks API Key, attaches req.user)
+  externalApiLimiter,      // 3. Rate Limit
+  smogImportRoutes         // 4. Controller
 );
 
 // Health Check Endpoint
