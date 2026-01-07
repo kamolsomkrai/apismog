@@ -11,7 +11,18 @@ const createUser = async (username, hashedPassword, hospcode, hospname) => {
 
 const findUserByUsername = async (username) => {
   const [rows] = await pool.query(
-    "SELECT users.*,CONCAT(c.provcode,c.distcode) AS distcode FROM users JOIN chospital c ON users.hospcode = c.hoscode WHERE username = ?",
+    `SELECT 
+      users.id,
+      users.username,
+      users.password_hash AS password,
+      users.hosp_code AS hospcode,
+      users.name AS hospname,
+      users.province_code AS provcode,
+      CONCAT(c.provcode, c.distcode) AS distcode,
+      users.role AS ssj_ok
+    FROM users 
+    LEFT JOIN chospital c ON users.hosp_code = c.hoscode 
+    WHERE username = ?`,
     [username]
   );
   return rows[0];
