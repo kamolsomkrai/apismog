@@ -63,14 +63,22 @@ app.use("/api/measure4", measure4Routes);
 app.use("/api/public", dashboardRoutes);
 app.use("/api/pher", pherRoutes);
 
-// Updated route with API Key Auth and Logger
+// JWT authenticated smog_import (for hospitals using login)
 app.use(
   "/api/smog_import",
-  apiLogger,               // 1. Start Logger
-  authenticateApiKey,      // 2. Auth Check (Checks API Key, attaches req.user)
-  externalApiLimiter,      // 3. Rate Limit
-  smogImportRoutes         // 4. Controller
+  authenticateTokenFromHeader,  // JWT Auth (hospitals login first, send Bearer token)
+  externalApiLimiter,           // Rate Limit
+  smogImportRoutes              // Controller
 );
+
+// API Key authenticated version (commented out - for future use)
+// app.use(
+//   "/api/smog_import_v2",
+//   apiLogger,
+//   authenticateApiKey,
+//   externalApiLimiter,
+//   smogImportRoutes
+// );
 
 // Health Check Endpoint
 app.get("/api/health", (req, res) => {
