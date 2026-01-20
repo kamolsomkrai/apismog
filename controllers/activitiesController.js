@@ -18,8 +18,17 @@ exports.createActivity = async (req, res) => {
   const { activityType, year } = req.body;
   const { hospcode, provcode, distcode } = req.user; // สมมุติว่าคีย์ใน req.user ตรงกับ schema
 
-  if (!hospcode || !provcode || !distcode || !activityType || !year) {
-    return res.status(400).json({ error: req.user });
+  if (
+    !hospcode ||
+    !provcode ||
+    !distcode ||
+    !activityType ||
+    !year ||
+    hospcode === "UNKNOWN" ||
+    provcode === "UNKNOWN" ||
+    distcode === "UNKNOWN"
+  ) {
+    return res.status(400).json({ error: "Missing required fields or invalid data", user: req.user });
   }
 
   try {

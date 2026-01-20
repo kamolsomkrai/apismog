@@ -1,12 +1,28 @@
 // models/userModel.js
 const pool = require("../config/db");
 
-const createUser = async (username, hashedPassword, hospcode, hospname) => {
+const createUser = async (username, hashedPassword, hospcode, hospname, provcode, provname) => {
   const [result] = await pool.query(
-    "INSERT INTO users (username, password, hospcode, hospname) VALUES (?, ?, ?, ?)",
-    [username, hashedPassword, hospcode, hospname]
+    "INSERT INTO users (username, password_hash, hosp_code, name, province_code, province_name) VALUES (?, ?, ?, ?, ?, ?)",
+    [username, hashedPassword, hospcode, hospname, provcode, provname]
   );
   return result.insertId;
+};
+
+const findHospitalByCode = async (hospcode) => {
+  const [rows] = await pool.query(
+    `SELECT 
+      c.hoscode, 
+      c.hosname, 
+      c.provcode, 
+      c.distcode,
+      p.provname
+    FROM chospital c
+    LEFT JOIN provinces p ON c.provcode = p.provcode
+    WHERE c.hoscode = ?`,
+    [hospcode]
+  );
+  return rows[0];
 };
 
 const findUserByUsername = async (username) => {
@@ -39,4 +55,5 @@ module.exports = {
   createUser,
   findUserByUsername,
   updateUserRefreshToken,
+  findHospitalByCode,
 };

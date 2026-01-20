@@ -4,10 +4,13 @@ const {
   getActivities,
   createActivity,
 } = require("../controllers/activitiesController");
+const {
+  authenticateTokenFromCookies,
+} = require("../middlewares/authenticateToken");
 
 const router = express.Router();
 
 router.get("/", getActivities);
-router.post("/", createActivity);
+router.post("/", authenticateTokenFromCookies, createActivity);
 
 module.exports = router;
