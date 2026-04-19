@@ -28,6 +28,7 @@ const measure3Routes = require("./routes/measure3");
 const measure4Routes = require("./routes/measure4");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const pherRoutes = require("./routes/pherRoutes");
+const region1ExportRoutes = require("./routes/region1ExportRoutes");
 
 const app = express();
 
@@ -63,6 +64,7 @@ app.use("/api/measure3", measure3Routes);
 app.use("/api/measure4", measure4Routes);
 app.use("/api/public", dashboardRoutes);
 app.use("/api/pher", pherRoutes);
+app.use("/api/region1_export", region1ExportRoutes); // Export APIs for Health Region 1
 
 // JWT authenticated smog_import (for hospitals using login)
 app.use(
