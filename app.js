@@ -19,6 +19,7 @@ const apiLogger = require("./middlewares/apiLogger");
 const authRoutes = require("./routes/authRoutes");
 const suppliesRoutes = require("./routes/suppliesRoutes");
 const smogImportRoutes = require("./routes/smogImportRoutes");
+const smogImportRoutesV2 = require("./routes/smogImportRoutesV2");
 const frontendRoutes = require("./routes/frontendRoutes");
 const activitiesRoutes = require("./routes/activities");
 const measure1Routes = require("./routes/measure1");
@@ -71,14 +72,11 @@ app.use(
   smogImportRoutes              // Controller
 );
 
-// API Key authenticated version (commented out - for future use)
-// app.use(
-//   "/api/smog_import_v2",
-//   apiLogger,
-//   authenticateApiKey,
-//   externalApiLimiter,
-//   smogImportRoutes
-// );
+// API Key authenticated version
+app.use(
+  "/api/smog_import_v2",
+  smogImportRoutesV2
+);
 
 // Health Check Endpoint
 app.get("/api/health", (req, res) => {

@@ -9,19 +9,15 @@ const authenticateApiKey = async (req, res, next) => {
         return res.status(401).json({ message: "API Key required (header: x-api-key)" });
     }
 
-    // Format check (smog_...)
-    if (!apiKeyHeader.startsWith('smog_')) {
-        res.locals.errorMessage = "Invalid API Key format";
-        return res.status(401).json({ message: "Invalid API Key format" });
-    }
-
     try {
-        // Hash the key
+        // We assume the client sends the full key.
+        // We hash the full key to match 'key_hash' in the DB.
+        // (Assuming the system stores hash of the full key string)
         const keyHash = crypto.createHash('sha256').update(apiKeyHeader).digest('hex');
 
         // Check DB
         const [rows] = await db.query(
-            "SELECT id, user_id, hosp_code, name, is_active FROM api_keys WHERE key_hash = ?", 
+            "SELECT id, user_id, hosp_code, name, is_active, expires_at FROM api_keys WHERE key_hash = ?", 
             [keyHash]
         );
 
@@ -37,15 +33,20 @@ const authenticateApiKey = async (req, res, next) => {
             return res.status(403).json({ message: "API Key revoked" });
         }
 
+        if (key.expires_at && new Date(key.expires_at) < new Date()) {
+            res.locals.errorMessage = "API Key expired";
+            return res.status(403).json({ message: "API Key expired" });
+        }
+
         // Attach user info to request
         req.user = {
             id: key.user_id,
-            hospcode: key.hosp_code, // Controller expects 'hospcode' (no underscore)
+            hospcode: key.hosp_code,
             apiKeyId: key.id,
             keyName: key.name
         };
 
-        // Update Last Used (Async, don't await blocking)
+        // Update Last Used (Async)
         db.query("UPDATE api_keys SET last_used_at = NOW() WHERE id = ?", [key.id]).catch(console.error);
 
         next();
