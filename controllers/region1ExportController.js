@@ -89,10 +89,13 @@ exports.getPreparation = async (req, res) => {
                     report_data: {}
                 });
             }
-            groupedMap.get(key).report_data[row.activity_catalog] = {
+            if (!groupedMap.get(key).report_data[row.activity_catalog]) {
+                groupedMap.get(key).report_data[row.activity_catalog] = [];
+            }
+            groupedMap.get(key).report_data[row.activity_catalog].push({
                 status: "done",
                 detail: row.activity_detail || "มีการดำเนินการ"
-            };
+            });
         });
 
         const list = Array.from(groupedMap.values());

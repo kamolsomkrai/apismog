@@ -11,8 +11,8 @@ const cleanDiagcode = require("../helpers/cleanDiagcode");
 const db = require("../config/db");
 require("dotenv").config();
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY.trim(); // key 32 bytes
-const ENCRYPTION_IV = process.env.ENCRYPTION_IV.trim();
+const ENCRYPTION_KEY = (process.env.ENCRYPTION_KEY || "").trim(); // key 32 bytes
+const ENCRYPTION_IV = (process.env.ENCRYPTION_IV || "").trim();
 
 function decryptData(encryptedData) {
   // console.debug("Starting decryption process...");

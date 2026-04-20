@@ -12,8 +12,8 @@ const cleanDiagcode = require("../helpers/cleanDiagcode");
 const db = require("../config/db");
 require("dotenv").config();
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY.trim();
-const ENCRYPTION_IV = process.env.ENCRYPTION_IV.trim();
+const ENCRYPTION_KEY = (process.env.ENCRYPTION_KEY || "").trim();
+const ENCRYPTION_IV = (process.env.ENCRYPTION_IV || "").trim();
 
 function decryptData(encryptedData) {
   const encryptedBuffer = Buffer.from(encryptedData, "base64");
