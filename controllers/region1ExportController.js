@@ -1,4 +1,5 @@
-const pool = require("../config/db");
+const poolRabad = require("../config/dbrabad");
+const poolDb2 = require("../config/db2");
 
 const PROVINCES = ['50', '51', '52', '54', '55', '56', '57', '58'];
 const PROVINCES_STR = PROVINCES.map(p => `'${p}'`).join(',');
@@ -36,7 +37,7 @@ exports.getPm25 = async (req, res) => {
             WHERE c.provcode IN (${PROVINCES_STR})
             AND p.collect_date BETWEEN ? AND ?
         `;
-        const [countResult] = await pool.query(countQuery, [start_date, end_date]);
+        const [countResult] = await poolRabad.query(countQuery, [start_date, end_date]);
         const total = countResult[0].total;
 
         const query = `
@@ -52,7 +53,7 @@ exports.getPm25 = async (req, res) => {
             ORDER BY p.collect_date DESC, c.provcode ASC
             LIMIT ? OFFSET ?
         `;
-        const [rows] = await pool.query(query, [start_date, end_date, limit, offset]);
+        const [rows] = await poolRabad.query(query, [start_date, end_date, limit, offset]);
         res.json(makeResponse(rows, total, page, limit));
     } catch (error) {
         console.error("Error fetching pm25_data:", error);
@@ -75,7 +76,7 @@ exports.getPreparation = async (req, res) => {
             AND m.activity_date BETWEEN ? AND ?
             ORDER BY m.activity_date DESC, a.prov_code ASC
         `;
-        const [rows] = await pool.query(query, [start_date, end_date]);
+        const [rows] = await poolDb2.query(query, [start_date, end_date]);
         
         // Group by province and date in JS
         const groupedMap = new Map();
@@ -116,7 +117,7 @@ exports.getEmergency = async (req, res) => {
             WHERE c.provcode IN (${PROVINCES_STR})
             AND DATE(a.updated_at) BETWEEN ? AND ?
         `;
-        const [countResult] = await pool.query(countQuery, [start_date, end_date]);
+        const [countResult] = await poolDb2.query(countQuery, [start_date, end_date]);
         const total = countResult[0].total;
 
         const query = `
@@ -138,7 +139,7 @@ exports.getEmergency = async (req, res) => {
             ORDER BY report_date DESC, c.provcode ASC
             LIMIT ? OFFSET ?
         `;
-        const [rows] = await pool.query(query, [start_date, end_date, limit, offset]);
+        const [rows] = await poolDb2.query(query, [start_date, end_date, limit, offset]);
         res.json(makeResponse(rows, total, page, limit));
     } catch (error) {
         console.error("Error fetching emergency_reports:", error);
@@ -157,7 +158,7 @@ exports.getHealth = async (req, res) => {
             WHERE c.provcode IN (${PROVINCES_STR})
             AND DATE(a.updated_at) BETWEEN ? AND ?
         `;
-        const [countResult] = await pool.query(countQuery, [start_date, end_date]);
+        const [countResult] = await poolDb2.query(countQuery, [start_date, end_date]);
         const total = countResult[0].total;
 
         const query = `
@@ -181,7 +182,7 @@ exports.getHealth = async (req, res) => {
             ORDER BY report_date DESC, c.provcode ASC
             LIMIT ? OFFSET ?
         `;
-        const [rows] = await pool.query(query, [start_date, end_date, limit, offset]);
+        const [rows] = await poolDb2.query(query, [start_date, end_date, limit, offset]);
         res.json(makeResponse(rows, total, page, limit));
     } catch (error) {
         console.error("Error fetching health_reports:", error);
