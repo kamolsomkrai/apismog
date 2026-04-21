@@ -127,13 +127,23 @@ exports.getEmergency = async (req, res) => {
             SELECT
                 c.provcode AS province_id,
                 DATE_FORMAT(DATE(a.updated_at), '%Y-%m-%d') AS report_date,
-                IF(DATE(a.updated_at) BETWEEN MAX(m4.open_pheoc_date) AND IFNULL(MAX(m4.close_pheoc_date), '2099-12-31'), 'opened', 'not_opened') AS eoc_status,
+                CASE
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM measure4 m4x
+                        JOIN activity ax ON m4x.activity_id = ax.activity_id
+                        WHERE ax.prov_code = c.provcode
+                          AND m4x.open_pheoc_date IS NOT NULL
+                          AND m4x.open_pheoc_date <= DATE(a.updated_at)
+                          AND (m4x.close_pheoc_date IS NULL OR m4x.close_pheoc_date >= DATE(a.updated_at))
+                    ) THEN 'opened'
+                    ELSE 'not_opened'
+                END AS eoc_status,
                 SUM(IFNULL(m2.risk_child_total, 0) + IFNULL(m2.risk_older_total, 0) + IFNULL(m2.risk_pregnant_total, 0) + IFNULL(m2.risk_bedridden_total, 0) + IFNULL(m2.risk_heart_total, 0) + IFNULL(m2.risk_copd_total, 0)) AS vulnerable_groups_target,
                 SUM(IFNULL(m2.risk_child_take_care, 0) + IFNULL(m2.risk_older_take_care, 0) + IFNULL(m2.risk_pregnant_take_care, 0) + IFNULL(m2.risk_bedridden_take_care, 0) + IFNULL(m2.risk_heart_take_care, 0) + IFNULL(m2.risk_copd_take_care, 0)) AS vulnerable_groups_cared,
                 SUM(IFNULL(m3.nursery_dust_free_service, 0) + IFNULL(m3.public_health_dust_free_service, 0) + IFNULL(m3.office_dust_free_service, 0) + IFNULL(m3.building_dust_free_service, 0) + IFNULL(m3.other_dust_free_service, 0)) AS clean_room_usage
             FROM cchangwat c
             JOIN activity a ON c.provcode = a.prov_code
-            LEFT JOIN measure4 m4 ON a.activity_id = m4.activity_id
             LEFT JOIN measure2 m2 ON a.activity_id = m2.activity_id
             LEFT JOIN measure3 m3 ON a.activity_id = m3.activity_id
             WHERE c.provcode IN (${PROVINCES_STR})
