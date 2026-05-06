@@ -12,6 +12,8 @@ services:
       - /usr/src/app/node_modules
     env_file:
       - .env
+    environment:
+      - API_URL=${API_URL}
     networks:
       - nginx_networks
 networks:

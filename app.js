@@ -1,4 +1,5 @@
 // app.js
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -15,6 +16,8 @@ const {
 // New Middlewares
 const authenticateApiKey = require("./middlewares/authenticateApiKey");
 const apiLogger = require("./middlewares/apiLogger");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpecs = require("./config/swagger");
 
 const authRoutes = require("./routes/authRoutes");
 const suppliesRoutes = require("./routes/suppliesRoutes");
@@ -33,6 +36,12 @@ const region1ExportRoutes = require("./routes/region1ExportRoutes");
 const app = express();
 
 app.set("trust proxy", 1);
+
+// Normalize double slashes in URL (e.g. //api/... -> /api/...) from reverse proxy
+app.use((req, res, next) => {
+  req.url = req.url.replace(/\/+/g, "/");
+  next();
+});
 
 // Middleware
 app.use(helmet());
@@ -79,6 +88,9 @@ app.use(
   "/api/smog_import_v2",
   smogImportRoutesV2
 );
+
+// Swagger Documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Health Check Endpoint
 app.get("/api/health", (req, res) => {
