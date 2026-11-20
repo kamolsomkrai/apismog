@@ -10,8 +10,19 @@ const options = {
     },
     servers: [
       {
-        url: process.env.API_URL || 'http://localhost:3000',
-        description: 'API Server',
+        url: '/',
+        description: 'Current Server (auto-match browser URL)',
+      },
+      ...(process.env.API_URL
+        ? [{ url: process.env.API_URL, description: 'Production / Configured API Server' }]
+        : []),
+      {
+        url: 'http://localhost:3000',
+        description: 'Local Development Server (npm start / dev)',
+      },
+      {
+        url: 'http://localhost:3006',
+        description: 'Local Docker Server (docker-compose)',
       },
     ],
     components: {

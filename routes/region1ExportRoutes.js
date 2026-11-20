@@ -36,9 +36,19 @@ const region1ExportController = require("../controllers/region1ExportController"
  *               limit:
  *                 type: integer
  *                 example: 50
+ *               provinces:
+ *                 oneOf:
+ *                   - type: string
+ *                   - type: array
+ *                     items:
+ *                       type: string
+ *                 description: Optional Region 1 province code(s) to filter (accepts both `provinces` and `PROVINCES`). Defaults to all 8 provinces.
+ *                 example: ["54"]
  *     responses:
  *       200:
  *         description: Success
+ *       400:
+ *         description: Invalid province code(s)
  *       500:
  *         description: Internal server error
  */
@@ -65,9 +75,19 @@ router.post("/pm25", region1ExportController.getPm25);
  *                 type: integer
  *               limit:
  *                 type: integer
+ *               provinces:
+ *                 oneOf:
+ *                   - type: string
+ *                   - type: array
+ *                     items:
+ *                       type: string
+ *                 description: Optional Region 1 province code(s) to filter (accepts both `provinces` and `PROVINCES`). Defaults to all 8 provinces.
+ *                 example: ["54"]
  *     responses:
  *       200:
  *         description: Success
+ *       400:
+ *         description: Invalid province code(s)
  */
 router.post("/preparation", region1ExportController.getPreparation);
 
@@ -92,9 +112,19 @@ router.post("/preparation", region1ExportController.getPreparation);
  *                 type: integer
  *               limit:
  *                 type: integer
+ *               provinces:
+ *                 oneOf:
+ *                   - type: string
+ *                   - type: array
+ *                     items:
+ *                       type: string
+ *                 description: Optional Region 1 province code(s) to filter (accepts both `provinces` and `PROVINCES`). Defaults to all 8 provinces.
+ *                 example: ["54"]
  *     responses:
  *       200:
  *         description: Success
+ *       400:
+ *         description: Invalid province code(s)
  */
 router.post("/emergency", region1ExportController.getEmergency);
 
@@ -119,9 +149,19 @@ router.post("/emergency", region1ExportController.getEmergency);
  *                 type: integer
  *               limit:
  *                 type: integer
+ *               provinces:
+ *                 oneOf:
+ *                   - type: string
+ *                   - type: array
+ *                     items:
+ *                       type: string
+ *                 description: Optional Region 1 province code(s) to filter (accepts both `provinces` and `PROVINCES`). Defaults to all 8 provinces.
+ *                 example: ["54"]
  *     responses:
  *       200:
  *         description: Success
+ *       400:
+ *         description: Invalid province code(s)
  */
 router.post("/health", region1ExportController.getHealth);
 

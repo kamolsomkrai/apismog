@@ -1,17 +1,54 @@
 const poolRabad = require("../config/dbrabad");
 const poolDb2 = require("../config/db2");
 
-const PROVINCES = ['50', '51', '52', '54', '55', '56', '57', '58'];
-const PROVINCES_STR = PROVINCES.map(p => `'${p}'`).join(',');
+const DEFAULT_PROVINCES = ['50', '51', '52', '54', '55', '56', '57', '58'];
+
+const resolveProvinces = (req) => {
+    const body = req.body || {};
+    const raw = body.PROVINCES !== undefined ? body.PROVINCES : body.provinces;
+
+    if (raw === undefined || raw === null || raw === '') {
+        return { provinces: DEFAULT_PROVINCES };
+    }
+
+    let list;
+    if (Array.isArray(raw)) {
+        if (raw.length === 0) {
+            return { provinces: DEFAULT_PROVINCES };
+        }
+        list = raw;
+    } else if (typeof raw === 'string' || typeof raw === 'number') {
+        list = String(raw).split(',').map(s => s.trim()).filter(Boolean);
+        if (list.length === 0) {
+            return { provinces: DEFAULT_PROVINCES };
+        }
+    } else {
+        return {
+            error: `Invalid PROVINCES format. Expected a province code or an array of codes from: ${DEFAULT_PROVINCES.join(', ')}`
+        };
+    }
+
+    const normalized = [...new Set(list.map(p => String(p).trim()))];
+    const invalid = normalized.filter(p => !DEFAULT_PROVINCES.includes(p));
+
+    if (invalid.length > 0) {
+        return {
+            error: `Invalid province code(s): ${invalid.join(', ')}. Allowed Region 1 provinces: ${DEFAULT_PROVINCES.join(', ')}`
+        };
+    }
+
+    return { provinces: normalized };
+};
 
 const paginateParams = (req) => {
     // Default last 7 days till today
+    const body = req.body || {};
     const defaultStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     const defaultEnd = new Date().toISOString().split('T')[0];
-    const start_date = req.body.start_date || defaultStart;
-    const end_date = req.body.end_date || defaultEnd;
-    const page = parseInt(req.body.page) || 1;
-    const limit = parseInt(req.body.limit) || 50;
+    const start_date = body.start_date || defaultStart;
+    const end_date = body.end_date || defaultEnd;
+    const page = parseInt(body.page) || 1;
+    const limit = parseInt(body.limit) || 50;
     const offset = (page - 1) * limit;
     return { start_date, end_date, page, limit, offset };
 };
@@ -29,15 +66,20 @@ const makeResponse = (rows, total, page, limit) => ({
 
 exports.getPm25 = async (req, res) => {
     try {
+        const { provinces, error } = resolveProvinces(req);
+        if (error) {
+            return res.status(400).json({ success: false, message: error });
+        }
+        const placeholders = provinces.map(() => '?').join(',');
         const { start_date, end_date, page, limit, offset } = paginateParams(req);
         const countQuery = `
             SELECT COUNT(DISTINCT c.provcode, p.collect_date) as total
             FROM cchangwat c
             JOIN pm25_dang p ON (c.provcode = p.province OR c.provname = p.province)
-            WHERE c.provcode IN (${PROVINCES_STR})
+            WHERE c.provcode IN (${placeholders})
             AND p.collect_date BETWEEN ? AND ?
         `;
-        const [countResult] = await poolRabad.query(countQuery, [start_date, end_date]);
+        const [countResult] = await poolRabad.query(countQuery, [...provinces, start_date, end_date]);
         const total = countResult[0].total;
 
         const query = `
@@ -47,13 +89,13 @@ exports.getPm25 = async (req, res) => {
                 IFNULL(ROUND(AVG(p.pm25_max), 2), 0) AS pm25_value
             FROM cchangwat c
             JOIN pm25_dang p ON (c.provcode = p.province OR c.provname = p.province)
-            WHERE c.provcode IN (${PROVINCES_STR})
+            WHERE c.provcode IN (${placeholders})
             AND p.collect_date BETWEEN ? AND ?
             GROUP BY c.provcode, p.collect_date
             ORDER BY p.collect_date DESC, c.provcode ASC
             LIMIT ? OFFSET ?
         `;
-        const [rows] = await poolRabad.query(query, [start_date, end_date, limit, offset]);
+        const [rows] = await poolRabad.query(query, [...provinces, start_date, end_date, limit, offset]);
         res.json(makeResponse(rows, total, page, limit));
     } catch (error) {
         console.error("Error fetching pm25_data:", error);
@@ -63,6 +105,11 @@ exports.getPm25 = async (req, res) => {
 
 exports.getPreparation = async (req, res) => {
     try {
+        const { provinces, error } = resolveProvinces(req);
+        if (error) {
+            return res.status(400).json({ success: false, message: error });
+        }
+        const placeholders = provinces.map(() => '?').join(',');
         const { start_date, end_date, page, limit, offset } = paginateParams(req);
         const query = `
             SELECT
@@ -72,11 +119,11 @@ exports.getPreparation = async (req, res) => {
                 m.activity_detail
             FROM measure1 m
             JOIN activity a ON m.activity_id = a.activity_id
-            WHERE a.prov_code IN (${PROVINCES_STR})
+            WHERE a.prov_code IN (${placeholders})
             AND m.activity_date BETWEEN ? AND ?
             ORDER BY m.activity_date DESC, a.prov_code ASC
         `;
-        const [rows] = await poolDb2.query(query, [start_date, end_date]);
+        const [rows] = await poolDb2.query(query, [...provinces, start_date, end_date]);
         
         // Group by province and date in JS
         const groupedMap = new Map();
@@ -111,16 +158,21 @@ exports.getPreparation = async (req, res) => {
 
 exports.getEmergency = async (req, res) => {
     try {
+        const { provinces, error } = resolveProvinces(req);
+        if (error) {
+            return res.status(400).json({ success: false, message: error });
+        }
+        const placeholders = provinces.map(() => '?').join(',');
         const { start_date, end_date, page, limit, offset } = paginateParams(req);
         
         const countQuery = `
             SELECT COUNT(DISTINCT c.provcode, DATE(a.updated_at)) as total
             FROM cchangwat c
             JOIN activity a ON c.provcode = a.prov_code
-            WHERE c.provcode IN (${PROVINCES_STR})
+            WHERE c.provcode IN (${placeholders})
             AND DATE(a.updated_at) BETWEEN ? AND ?
         `;
-        const [countResult] = await poolDb2.query(countQuery, [start_date, end_date]);
+        const [countResult] = await poolDb2.query(countQuery, [...provinces, start_date, end_date]);
         const total = countResult[0].total;
 
         const query = `
@@ -146,13 +198,13 @@ exports.getEmergency = async (req, res) => {
             JOIN activity a ON c.provcode = a.prov_code
             LEFT JOIN measure2 m2 ON a.activity_id = m2.activity_id
             LEFT JOIN measure3 m3 ON a.activity_id = m3.activity_id
-            WHERE c.provcode IN (${PROVINCES_STR})
+            WHERE c.provcode IN (${placeholders})
             AND DATE(a.updated_at) BETWEEN ? AND ?
             GROUP BY c.provcode, DATE(a.updated_at)
             ORDER BY report_date DESC, c.provcode ASC
             LIMIT ? OFFSET ?
         `;
-        const [rows] = await poolDb2.query(query, [start_date, end_date, limit, offset]);
+        const [rows] = await poolDb2.query(query, [...provinces, start_date, end_date, limit, offset]);
         res.json(makeResponse(rows, total, page, limit));
     } catch (error) {
         console.error("Error fetching emergency_reports:", error);
@@ -162,16 +214,21 @@ exports.getEmergency = async (req, res) => {
 
 exports.getHealth = async (req, res) => {
     try {
+        const { provinces, error } = resolveProvinces(req);
+        if (error) {
+            return res.status(400).json({ success: false, message: error });
+        }
+        const placeholders = provinces.map(() => '?').join(',');
         const { start_date, end_date, page, limit, offset } = paginateParams(req);
         
         const countQuery = `
             SELECT COUNT(DISTINCT c.provcode, DATE(a.updated_at)) as total
             FROM cchangwat c
             JOIN activity a ON c.provcode = a.prov_code
-            WHERE c.provcode IN (${PROVINCES_STR})
+            WHERE c.provcode IN (${placeholders})
             AND DATE(a.updated_at) BETWEEN ? AND ?
         `;
-        const [countResult] = await poolDb2.query(countQuery, [start_date, end_date]);
+        const [countResult] = await poolDb2.query(countQuery, [...provinces, start_date, end_date]);
         const total = countResult[0].total;
 
         const query = `
@@ -189,13 +246,13 @@ exports.getHealth = async (req, res) => {
             JOIN activity a ON c.provcode = a.prov_code
             LEFT JOIN measure2 m2 ON a.activity_id = m2.activity_id
             LEFT JOIN measure3 m3 ON a.activity_id = m3.activity_id
-            WHERE c.provcode IN (${PROVINCES_STR})
+            WHERE c.provcode IN (${placeholders})
             AND DATE(a.updated_at) BETWEEN ? AND ?
             GROUP BY c.provcode, DATE(a.updated_at)
             ORDER BY report_date DESC, c.provcode ASC
             LIMIT ? OFFSET ?
         `;
-        const [rows] = await poolDb2.query(query, [start_date, end_date, limit, offset]);
+        const [rows] = await poolDb2.query(query, [...provinces, start_date, end_date, limit, offset]);
         res.json(makeResponse(rows, total, page, limit));
     } catch (error) {
         console.error("Error fetching health_reports:", error);

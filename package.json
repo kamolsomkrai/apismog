@@ -11,19 +11,15 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "connect-mysql2": "^2.2.6",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
-    "dotenv": "^16.4.5",
+    "dotenv": "^18.0.10",
     "express": "^4.21.1",
-    "express-rate-limit": "^7.4.1",
-    "express-session": "^1.18.1",
+    "express-rate-limit": "^8.7.5",
     "express-validator": "^7.2.1",
     "helmet": "^8.0.0",
-    "iconv-lite": "^0.6.3",
-    "joi": "^17.13.3",
+    "joi": "^18.3.2",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "mysql2": "^3.12.0",
@@ -34,5 +30,9 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
+  },
+  "overrides": {
+    "glob": "^14.0.6",
+    "minimatch": "^11.0.9"
   }
 }
